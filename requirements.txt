@@ -36,7 +36,7 @@ gradio==4.43.0
 
 # HTTP / resilience
 httpx==0.27.2
-tenacity==9.0.0
+tenacity==8.5.0
 
 # Logging
 loguru==0.7.2
