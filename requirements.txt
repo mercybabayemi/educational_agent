@@ -23,6 +23,23 @@ langgraph==0.2.20
 chromadb==0.5.5
 sentence-transformers==3.1.0
 
+# Explicit pins to prevent pip backtracking on chromadb's opentelemetry chain.
+# The HF base image pre-installs protobuf<4; these pins select a compatible set
+# of opentelemetry packages that satisfy both chromadb and that protobuf constraint.
+protobuf>=3.20.3,<4.0.0
+googleapis-common-protos==1.57.0
+opentelemetry-api==1.22.0
+opentelemetry-sdk==1.22.0
+opentelemetry-semantic-conventions==0.43b0
+opentelemetry-instrumentation==0.43b0
+opentelemetry-instrumentation-fastapi==0.43b0
+opentelemetry-instrumentation-asgi==0.43b0
+opentelemetry-exporter-otlp-proto-grpc==1.22.0
+opentelemetry-exporter-otlp-proto-common==1.22.0
+opentelemetry-proto==1.22.0
+opentelemetry-util-http==0.43b0
+importlib-metadata>=6.0,<7.0
+
 # Document ingestion
 pypdf==4.3.1
 unstructured==0.20.2
