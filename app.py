@@ -29,5 +29,4 @@ os.environ.setdefault("BACKEND_URL", "http://localhost:8000")
 from app.ui.gradio_app import create_app
 
 demo = create_app()
-demo.queue()
 demo.launch(server_name="0.0.0.0", server_port=7860)

@@ -595,6 +595,7 @@ def create_app() -> gr.Blocks:
         build_diagnostics_tab()
         build_status_tab()
 
+    demo.queue(max_size=20)
     return demo
 
 
