@@ -7,7 +7,7 @@ sdk: gradio
 sdk_version: 4.43.0
 app_file: app.py
 hardware: t4-medium
-python_version: "3.10"
+python_version: "3.11"
 ---
 
 # EnumVerse AI
