@@ -42,7 +42,6 @@ importlib-metadata>=6.0,<8.8.0
 
 # Document ingestion
 pypdf==4.3.1
-unstructured==0.20.2
 
 # Language detection
 langdetect==1.0.9
