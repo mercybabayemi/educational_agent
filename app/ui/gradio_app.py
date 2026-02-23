@@ -41,9 +41,17 @@ SUBJECTS = [
 ]
 
 EDUCATION_LEVELS = [
+    # School-based
     "PRIMARY_1_3", "PRIMARY_4_6", "JSS1", "JSS2", "JSS3",
     "SSS1", "SSS2", "SSS3", "TERTIARY",
-    "VOCATIONAL_BASIC", "VOCATIONAL_ADVANCED", "ADULT_LITERACY", "PROFESSIONAL_DEV",
+    # Vocational & skill-based
+    "VOCATIONAL_BASIC", "VOCATIONAL_ADVANCED",
+    # Cohort / bootcamp style
+    "BEGINNER_COHORT", "INTERMEDIATE_COHORT", "ADVANCED_COHORT",
+    # Informal & community
+    "ADULT_LITERACY", "YOUTH_GROUP", "COMMUNITY_GROUP",
+    # Professional
+    "PROFESSIONAL_DEV",
 ]
 
 CURRICULUM_BOARDS = ["NERDC", "WAEC", "NECO", "NABTEB", "UBEC", "BECE_GH", "WAEC_GH", "GES_GH", "CUSTOM"]
@@ -118,7 +126,8 @@ def build_content_tab() -> gr.Tab:
                 subject = gr.Dropdown(SUBJECTS, label="Subject", value="mathematics")
                 topic = gr.Textbox(label="Topic", placeholder="e.g. Pythagoras Theorem")
                 content_type = gr.Dropdown(CONTENT_TYPES, label="Content Type", value="LESSON_PLAN")
-                education_level = gr.Dropdown(EDUCATION_LEVELS, label="Education Level", value="SSS1")
+                program_type = gr.Dropdown(PROGRAM_TYPES, label="Program Type", value="ACADEMIC")
+                education_level = gr.Dropdown(EDUCATION_LEVELS, label="Learner Level", value="SSS1")
                 curriculum_board = gr.Dropdown(CURRICULUM_BOARDS, label="Curriculum Board", value="NERDC")
 
                 with gr.Accordion("Language & Culture", open=False):
@@ -146,7 +155,7 @@ def build_content_tab() -> gr.Tab:
                 skill_tags_box = gr.JSON(label="Skill Tags")
 
         def run_content(
-            subject, topic, content_type, education_level, curriculum_board,
+            subject, topic, content_type, program_type, education_level, curriculum_board,
             language, use_local_names, use_local_examples,
             bloom_level, duration, target_skills, include_teacher_notes,
             include_answer_key, use_rag, max_tokens,
@@ -157,7 +166,7 @@ def build_content_tab() -> gr.Tab:
                 "topic": topic,
                 "content_type": content_type,
                 "curriculum_board": curriculum_board,
-                "learner_profile": {"education_level": education_level, "program_type": "ACADEMIC"},
+                "learner_profile": {"education_level": education_level, "program_type": program_type},
                 "pedagogical_goals": {
                     "bloom_level": bloom_level,
                     "learning_objectives": [],
@@ -186,7 +195,7 @@ def build_content_tab() -> gr.Tab:
         generate_btn.click(
             run_content,
             inputs=[
-                subject, topic, content_type, education_level, curriculum_board,
+                subject, topic, content_type, program_type, education_level, curriculum_board,
                 language, use_local_names, use_local_examples,
                 bloom_level, duration, target_skills, include_teacher_notes,
                 include_answer_key, use_rag, max_tokens,
@@ -205,7 +214,8 @@ def build_curriculum_tab() -> gr.Tab:
         with gr.Row():
             with gr.Column(scale=1):
                 subject = gr.Dropdown(SUBJECTS, label="Subject", value="mathematics")
-                education_level = gr.Dropdown(EDUCATION_LEVELS, label="Education Level", value="SSS1")
+                program_type = gr.Dropdown(PROGRAM_TYPES, label="Program Type", value="ACADEMIC")
+                education_level = gr.Dropdown(EDUCATION_LEVELS, label="Learner Level", value="SSS1")
                 curriculum_board = gr.Dropdown(CURRICULUM_BOARDS, label="Curriculum Board", value="NERDC")
                 output_type = gr.Dropdown(
                     ["SCHEME_OF_WORK", "TERM_PLAN", "UNIT_PLAN", "SCOPE_AND_SEQUENCE", "LEARNING_OUTCOMES"],
@@ -236,7 +246,7 @@ def build_curriculum_tab() -> gr.Tab:
                 skill_tags_box = gr.JSON(label="Skill Tags")
 
         def run_curriculum(
-            subject, education_level, curriculum_board, output_type,
+            subject, program_type, education_level, curriculum_board, output_type,
             num_terms, weeks_per_term, language, bloom_level,
             topics_input, include_resources, include_assessment, use_rag, max_tokens,
         ):
@@ -249,7 +259,7 @@ def build_curriculum_tab() -> gr.Tab:
                 "num_terms": int(num_terms),
                 "num_weeks_per_term": int(weeks_per_term),
                 "topics": topics,
-                "learner_profile": {"education_level": education_level, "program_type": "ACADEMIC"},
+                "learner_profile": {"education_level": education_level, "program_type": program_type},
                 "pedagogical_goals": {"bloom_level": bloom_level, "learning_objectives": []},
                 "output_language": LANGUAGE_CODES.get(language, "en"),
                 "cultural_context": {"use_local_names": True, "use_local_examples": True},
@@ -275,7 +285,7 @@ def build_curriculum_tab() -> gr.Tab:
         generate_btn.click(
             run_curriculum,
             inputs=[
-                subject, education_level, curriculum_board, output_type,
+                subject, program_type, education_level, curriculum_board, output_type,
                 num_terms, weeks_per_term, language, bloom_level,
                 topics_input, include_resources, include_assessment, use_rag, max_tokens,
             ],
@@ -295,8 +305,9 @@ def build_assessment_tab() -> gr.Tab:
                 subject = gr.Dropdown(SUBJECTS, label="Subject", value="mathematics")
                 topic = gr.Textbox(label="Topic", placeholder="e.g. Quadratic Equations")
                 assessment_type = gr.Dropdown(ASSESSMENT_TYPES, label="Assessment Type", value="EXAM_QUESTIONS")
+                program_type = gr.Dropdown(PROGRAM_TYPES, label="Program Type", value="ACADEMIC")
                 curriculum_board = gr.Dropdown(CURRICULUM_BOARDS, label="Curriculum Board", value="WAEC")
-                education_level = gr.Dropdown(EDUCATION_LEVELS, label="Education Level", value="SSS3")
+                education_level = gr.Dropdown(EDUCATION_LEVELS, label="Learner Level", value="SSS3")
                 num_questions = gr.Slider(5, 50, value=10, step=5, label="Number of Questions")
                 question_format = gr.Dropdown(QUESTION_FORMATS, label="Question Format", value="MIXED")
                 difficulty = gr.Dropdown(DIFFICULTY_LEVELS, label="Difficulty", value="MIXED")
@@ -326,7 +337,7 @@ def build_assessment_tab() -> gr.Tab:
                     skill_dist = gr.JSON(label="Skill Distribution")
 
         def run_assessment(
-            subject, topic, assessment_type, curriculum_board, education_level,
+            subject, topic, assessment_type, program_type, curriculum_board, education_level,
             num_questions, question_format, difficulty, bloom_level,
             language, target_skills, include_answers, include_marking, use_rag, max_tokens,
         ):
@@ -336,7 +347,7 @@ def build_assessment_tab() -> gr.Tab:
                 "topic": topic,
                 "assessment_type": assessment_type,
                 "curriculum_board": curriculum_board,
-                "learner_profile": {"education_level": education_level, "program_type": "ACADEMIC"},
+                "learner_profile": {"education_level": education_level, "program_type": program_type},
                 "bloom_level": bloom_level,
                 "difficulty": difficulty,
                 "question_format": question_format,
@@ -367,7 +378,7 @@ def build_assessment_tab() -> gr.Tab:
         generate_btn.click(
             run_assessment,
             inputs=[
-                subject, topic, assessment_type, curriculum_board, education_level,
+                subject, topic, assessment_type, program_type, curriculum_board, education_level,
                 num_questions, question_format, difficulty, bloom_level,
                 language, target_skills, include_answers, include_marking, use_rag, max_tokens,
             ],
