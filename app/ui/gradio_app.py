@@ -571,7 +571,7 @@ def build_status_tab() -> gr.Tab:
 
 def create_app() -> gr.Blocks:
     with gr.Blocks(
-        title="EnumVerse Educational AI",
+        title="EnumVerse AI — Knowledge & Skills Content Studio",
         theme=gr.themes.Soft(
             primary_hue="green",
             secondary_hue="yellow",
@@ -583,9 +583,9 @@ def create_app() -> gr.Blocks:
     ) as demo:
         gr.Markdown(
             """
-            # 📚 EnumVerse AI — Educational Content Generator
-            **AI-powered, curriculum-aligned content for Nigerian & West African learners**
-            *NERDC · WAEC · NECO · GES · UBEC · NABTEB · English · Yoruba · Igbo · Hausa · Pidgin*
+            # 📚 EnumVerse AI — Knowledge & Skills Content Studio
+            **AI-powered content for Nigerian & West African teachers, trainers & communities**
+            *Academic · Vocational · Community · Life Skills · Bootcamp · Informal · English · Yoruba · Igbo · Hausa · Pidgin*
             """
         )
 
