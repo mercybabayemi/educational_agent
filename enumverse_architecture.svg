@@ -38,7 +38,7 @@
 
   <!-- ═══ TITLE BAR ═══ -->
   <rect x="0" y="0" width="1200" height="56" fill="url(#headerGrad)" rx="0"/>
-  <text x="600" y="21" text-anchor="middle" fill="white" font-size="11" font-weight="400" opacity="0.85">📚 AI-Powered Educational Content Generation for West Africa &amp; Nigeria</text>
+  <text x="600" y="21" text-anchor="middle" fill="white" font-size="11" font-weight="400" opacity="0.85">📚 AI-Powered Knowledge &amp; Skills Content for West African Teachers, Trainers &amp; Communities</text>
   <text x="600" y="42" text-anchor="middle" fill="white" font-size="18" font-weight="700" letter-spacing="1">EnumVerse AI — System Architecture</text>
 
   <!-- ═══ LAYER 1: CLIENT LAYER ═══ -->
@@ -47,18 +47,19 @@
 
   <!-- Backend Engineers box -->
   <rect x="60" y="98" width="240" height="48" fill="#ffffff" rx="6" stroke="#81C784" stroke-width="1.5"/>
-  <text x="180" y="116" text-anchor="middle" fill="#1a6b3a" font-size="12" font-weight="700">🖥️  Backend Engineers</text>
+  <text x="180" y="116" text-anchor="middle" fill="#1a6b3a" font-size="12" font-weight="700">🖥️  Frontend Engineers</text>
   <text x="180" y="132" text-anchor="middle" fill="#555" font-size="10">curl / SDK → REST API</text>
 
   <!-- Educators / Stakeholders -->
   <rect x="340" y="98" width="240" height="48" fill="#ffffff" rx="6" stroke="#81C784" stroke-width="1.5"/>
-  <text x="460" y="116" text-anchor="middle" fill="#1a6b3a" font-size="12" font-weight="700">📋  Educators / Stakeholders</text>
-  <text x="460" y="132" text-anchor="middle" fill="#555" font-size="10">Gradio UI on HF Spaces</text>
+  <text x="460" y="116" text-anchor="middle" fill="#1a6b3a" font-size="12" font-weight="700">📋  Teachers, Trainers &amp; Communities</text>
+  <text x="460" y="132" text-anchor="middle" fill="#555" font-size="10">Gradio UI · API Testing Dashboard</text>
 
   <!-- HF Spaces badge -->
   <rect x="620" y="98" width="510" height="48" fill="#FFF3E0" rx="6" stroke="#FFB74D" stroke-width="1.5"/>
-  <text x="875" y="116" text-anchor="middle" fill="#E65100" font-size="11" font-weight="700">🤗  Gradio 4.43 · HuggingFace Spaces (t4-medium · 16 GB VRAM)</text>
-  <text x="875" y="132" text-anchor="middle" fill="#555" font-size="10">5 tabs: Content · Curriculum · Assessment · Diagnostics · System Status</text>
+  <text x="875" y="112" text-anchor="middle" fill="#E65100" font-size="11" font-weight="700">🤗  Gradio 4.44.1 · HuggingFace Spaces (t4-medium · 16 GB VRAM)</text>
+  <text x="875" y="126" text-anchor="middle" fill="#555" font-size="10">5 tabs: Content · Curriculum · Assessment · Diagnostics · System Status</text>
+  <text x="875" y="140" text-anchor="middle" fill="#555" font-size="9">Program Type: Academic · Vocational · Community · Life Skills · Agricultural · Teacher Training · Youth Enterprise</text>
 
   <!-- ═══ LAYER 2: API GATEWAY ═══ -->
   <rect x="20" y="176" width="1160" height="80" fill="#E3F2FD" rx="8" stroke="#90CAF9" stroke-width="1.5" filter="url(#shadow)"/>
@@ -272,8 +273,8 @@
   <!-- ═══ LEGEND ═══ -->
   <rect x="20" y="818" width="1160" height="72" fill="#F1F8E9" rx="6" stroke="#DCEDC8" stroke-width="1.2"/>
   <text x="36" y="836" fill="#33691E" font-size="10" font-weight="700" letter-spacing="0.5">TECH STACK &amp; DESIGN NOTES</text>
-  <text x="36"  y="851" fill="#444" font-size="9">FastAPI 0.115 · Pydantic v2 · LangGraph 0.2 · ChromaDB 0.5 · Gradio 4.43 · Python 3.11+</text>
-  <text x="36"  y="865" fill="#444" font-size="9">Validation: Rules every response (~50ms) → Mistral judge only on rule failure → revise_node (max 2 retries)</text>
+  <text x="36"  y="851" fill="#444" font-size="9">FastAPI 0.115 · Pydantic v2 · LangGraph 0.2 · ChromaDB 0.5 · Gradio 4.44.1 · Python 3.11+</text>
+  <text x="36"  y="865" fill="#444" font-size="9">Program Type: Academic · Vocational · Community · Life Skills · Agricultural · Teacher Training · Youth Enterprise  |  Learner Level: School Classes · Cohort (Beginner/Intermediate/Advanced) · Youth Group · Community Group · Adult Literacy</text>
   <text x="36"  y="879" fill="#444" font-size="9">Cultural anchors: Chukwuemeka · Adaeze · Aminu · Tunde · Kofi · Ama · Fatima · Balogun Market · Niger River · ₦ Naira / ₵ Cedis · NNPC · WAEC · UBEC</text>
 
   <text x="800" y="851" fill="#444" font-size="9">Chunking: Hierarchical (UNIT/TOPIC/WEEK headers) · 400-600 tokens · 80-token overlap · parent header prepended</text>
