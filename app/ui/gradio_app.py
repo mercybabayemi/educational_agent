@@ -23,7 +23,7 @@ import gradio as gr
 import httpx
 
 # ── Backend URL ────────────────────────────────────────────────────────────────
-BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:7860")
 API = f"{BACKEND_URL}/api/v1"
 TIMEOUT = 120.0
 
@@ -594,8 +594,8 @@ def create_app() -> gr.Blocks:
         build_assessment_tab()
         build_diagnostics_tab()
         build_status_tab()
+        demo.queue(max_size=20)
 
-    demo.queue(max_size=20)
     return demo
 
 

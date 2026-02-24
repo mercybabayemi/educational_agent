@@ -1,7 +1,7 @@
 ---
 title: EnumVerse Educational AI
 emoji: 📚
-colorFrom: green
+colorFrom: blue
 colorTo: yellow
 sdk: gradio
 sdk_version: 4.44.1
