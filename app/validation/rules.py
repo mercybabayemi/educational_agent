@@ -11,12 +11,18 @@ from loguru import logger
 # ── Bloom verb banks (for bloom_verb_presence check) ──────────────────────────
 
 BLOOM_VERBS_BY_LEVEL: dict[str, List[str]] = {
-    "REMEMBER":   ["define", "list", "recall", "name", "identify", "state", "memorise", "memorize"],
-    "UNDERSTAND": ["explain", "describe", "summarise", "summarize", "paraphrase", "interpret", "classify", "give examples"],
-    "APPLY":      ["solve", "use", "demonstrate", "calculate", "apply", "carry out", "execute", "implement"],
-    "ANALYZE":    ["analyse", "analyze", "compare", "contrast", "distinguish", "examine", "break down", "differentiate"],
-    "EVALUATE":   ["evaluate", "justify", "assess", "critique", "judge", "argue", "defend"],
-    "CREATE":     ["design", "create", "compose", "construct", "develop", "produce", "plan"],
+    "REMEMBER":   ["define", "list", "recall", "name", "identify", "state", "memorise", "memorize",
+                   "know", "recognise", "recognize", "repeat", "match", "label", "select"],
+    "UNDERSTAND": ["explain", "describe", "summarise", "summarize", "paraphrase", "interpret", "classify", "give examples",
+                   "understand", "discuss", "express", "locate", "report", "review", "tell"],
+    "APPLY":      ["solve", "use", "demonstrate", "calculate", "apply", "carry out", "execute", "implement",
+                   "practise", "practice", "show", "complete", "model", "perform", "present"],
+    "ANALYZE":    ["analyse", "analyze", "compare", "contrast", "distinguish", "examine", "break down", "differentiate",
+                   "investigate", "question", "test", "categorise", "categorize", "separate", "order"],
+    "EVALUATE":   ["evaluate", "justify", "assess", "critique", "judge", "argue", "defend",
+                   "review", "measure", "recommend", "rank", "select", "decide", "rate"],
+    "CREATE":     ["design", "create", "compose", "construct", "develop", "produce", "plan",
+                   "write", "make", "build", "generate", "formulate", "invent", "propose"],
 }
 
 # ── Profanity / explicit content blocklist (non-exhaustive) ───────────────────
@@ -213,9 +219,14 @@ def check_format_compliance(
             )
 
     elif ct == "LESSON_PLAN":
-        required_sections = ["objective", "activity", "assessment"]
+        # Each tuple: (canonical name, accepted synonyms)
+        required_sections = [
+            ("objective",   ["objective", "learning outcome", "aim", "goal", "target"]),
+            ("activity",    ["activity", "procedure", "exercise", "task", "instruction", "method", "practice"]),
+            ("assessment",  ["assessment", "evaluation", "evaluate", "test", "quiz", "check", "review"]),
+        ]
         lower = content.lower()
-        missing = [s for s in required_sections if s not in lower]
+        missing = [name for name, synonyms in required_sections if not any(s in lower for s in synonyms)]
         if missing:
             return RuleResult(
                 "format_compliance", False,

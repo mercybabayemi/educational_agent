@@ -69,10 +69,28 @@ async def _bootstrap_rag() -> None:
         )
 
 
+async def _warmup_models() -> None:
+    """Eagerly load both LLM pipelines so they're cached before any request."""
+    from app.core.llm import get_phi_pipeline, get_judge_pipeline
+
+    try:
+        await asyncio.to_thread(get_phi_pipeline)
+        logger.info("Primary model (Phi-3) warmed up.")
+    except Exception as exc:
+        logger.warning(f"Primary model warmup failed: {exc}")
+
+    try:
+        await asyncio.to_thread(get_judge_pipeline)
+        logger.info("Judge model (TinyLlama) warmed up.")
+    except Exception as exc:
+        logger.warning(f"Judge model warmup failed: {exc}")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Block on RAG bootstrap before accepting any requests."""
+    """Bootstrap RAG then pre-load both LLM pipelines before accepting requests."""
     await _bootstrap_rag()
+    await _warmup_models()
     yield
 
 

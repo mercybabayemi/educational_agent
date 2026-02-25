@@ -1,4 +1,4 @@
-"""Embedding wrapper: distilgpt2 (lightweight, CPU-friendly)."""
+"""Embedding wrapper: all-MiniLM-L6-v2 (lightweight, CPU-friendly sentence embeddings)."""
 from __future__ import annotations
 
 from functools import lru_cache
@@ -12,7 +12,7 @@ from app.core.config import settings
 
 @lru_cache(maxsize=1)
 def get_embeddings() -> HuggingFaceEmbeddings:
-    """Return a globally cached HuggingFaceEmbeddings instance (distilgpt2).
+    """Return a globally cached HuggingFaceEmbeddings instance.
 
     Loaded once per process; subsequent calls return the same object.
     """

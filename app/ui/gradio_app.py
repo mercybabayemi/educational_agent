@@ -157,7 +157,7 @@ def build_content_tab() -> gr.Tab:
                     include_teacher_notes = gr.Checkbox(label="Include Teacher Notes", value=False)
                     include_answer_key = gr.Checkbox(label="Include Answer Key", value=True)
                     use_rag = gr.Checkbox(label="Use RAG (curriculum context)", value=True)
-                    max_tokens = gr.Slider(64, 512, value=256, step=64, label="Max Tokens")
+                    max_tokens = gr.Slider(64, 768, value=384, step=64, label="Max Tokens")
 
                 generate_btn = gr.Button("🚀 Generate Content", variant="primary")
 
@@ -247,7 +247,7 @@ def build_curriculum_tab() -> gr.Tab:
                     include_resources = gr.Checkbox(label="Include Resources", value=True)
                     include_assessment = gr.Checkbox(label="Include Assessment Schedule", value=True)
                 use_rag = gr.Checkbox(label="Use RAG", value=True)
-                max_tokens = gr.Slider(64, 512, value=256, step=64, label="Max Tokens")
+                max_tokens = gr.Slider(64, 768, value=384, step=64, label="Max Tokens")
                 generate_btn = gr.Button("🏗️ Build Curriculum", variant="primary")
 
             with gr.Column(scale=2):
@@ -335,7 +335,7 @@ def build_assessment_tab() -> gr.Tab:
                         include_answers = gr.Checkbox(label="Include Answer Key", value=True)
                         include_marking = gr.Checkbox(label="Include Marking Guide", value=True)
                     use_rag = gr.Checkbox(label="Use RAG", value=True)
-                    max_tokens = gr.Slider(64, 256, value=128, step=32, label="Max Tokens")
+                    max_tokens = gr.Slider(64, 512, value=256, step=32, label="Max Tokens")
 
                 generate_btn = gr.Button("📋 Generate Assessment", variant="primary")
 

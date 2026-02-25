@@ -217,16 +217,15 @@ CONTENT_HUMAN = """Create a {content_type} on the topic: "{topic}"
 
 CONTENT_FORMAT_MAP: dict[str, str] = {
     "LESSON_PLAN": (
-        "Structure the lesson plan with these sections:\n"
-        "1. Lesson Overview (subject, topic, class, duration)\n"
-        "2. Learning Objectives (Bloom-aligned)\n"
+        "You MUST include all of these labelled sections in this order:\n"
+        "1. Lesson Overview — subject, topic, class, duration\n"
+        "2. Learning Objective(s) — Bloom-aligned goals (use the word 'Objective')\n"
         "3. Materials and Resources\n"
         "4. Introduction / Warm-up (5–10 min)\n"
-        "5. Main Activity / Instruction\n"
+        "5. Main Activity — teaching steps and student tasks (use the word 'Activity')\n"
         "6. Guided Practice\n"
-        "7. Assessment (in-class check)\n"
+        "7. Assessment — how learning will be checked (use the word 'Assessment')\n"
         "8. Closure and Summary\n"
-        "9. Homework / Extension\n"
         "{teacher_notes_section}"
     ),
     "WORKSHEET": (
