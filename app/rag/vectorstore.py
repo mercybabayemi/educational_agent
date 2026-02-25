@@ -27,7 +27,7 @@ def _get_chroma_client() -> chromadb.PersistentClient:
 
 @lru_cache(maxsize=1)
 def get_vectorstore() -> Chroma:
-    """Return a singleton Chroma vectorstore backed by multilingual-e5-large."""
+    """Return a singleton Chroma vectorstore backed by distilgpt2 embeddings."""
     logger.info(f"Connecting to ChromaDB at {settings.chroma_persist_dir}")
     client = _get_chroma_client()
     vectorstore = Chroma(

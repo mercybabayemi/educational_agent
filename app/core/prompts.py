@@ -535,7 +535,7 @@ def build_judge_prompt(
     output_language: str = "en",
     failed_rules: List[str] = None,
 ) -> list[dict]:
-    """Build [system, user] messages for the Mistral judge."""
+    """Build [system, user] messages for the TinyLlama judge."""
     human = JUDGE_HUMAN.format(
         content=content[:3000],
         content_type=content_type,

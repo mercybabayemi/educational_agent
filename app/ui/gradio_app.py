@@ -115,6 +115,18 @@ def _get(endpoint: str, params: dict | None = None) -> tuple[str, str]:
         return "", f"❌ {exc}"
 
 
+def _post_params(endpoint: str, params: dict) -> tuple[str, str]:
+    """POST with query params (no body) — used for trigger-style endpoints."""
+    try:
+        with httpx.Client(timeout=30.0) as client:
+            r = client.post(f"{API}/{endpoint}", params=params)
+        if r.status_code == 200:
+            return json.dumps(r.json(), indent=2, ensure_ascii=False), "✅ Started"
+        return r.text, f"❌ Error {r.status_code}"
+    except Exception as exc:
+        return "", f"❌ {exc}"
+
+
 # ── Tab 1: Content Generator ───────────────────────────────────────────────────
 
 def build_content_tab() -> gr.Tab:
@@ -145,7 +157,7 @@ def build_content_tab() -> gr.Tab:
                     include_teacher_notes = gr.Checkbox(label="Include Teacher Notes", value=False)
                     include_answer_key = gr.Checkbox(label="Include Answer Key", value=True)
                     use_rag = gr.Checkbox(label="Use RAG (curriculum context)", value=True)
-                    max_tokens = gr.Slider(256, 2048, value=1024, step=128, label="Max Tokens")
+                    max_tokens = gr.Slider(64, 512, value=256, step=64, label="Max Tokens")
 
                 generate_btn = gr.Button("🚀 Generate Content", variant="primary")
 
@@ -235,7 +247,7 @@ def build_curriculum_tab() -> gr.Tab:
                     include_resources = gr.Checkbox(label="Include Resources", value=True)
                     include_assessment = gr.Checkbox(label="Include Assessment Schedule", value=True)
                 use_rag = gr.Checkbox(label="Use RAG", value=True)
-                max_tokens = gr.Slider(512, 4096, value=2048, step=256, label="Max Tokens")
+                max_tokens = gr.Slider(64, 512, value=256, step=64, label="Max Tokens")
                 generate_btn = gr.Button("🏗️ Build Curriculum", variant="primary")
 
             with gr.Column(scale=2):
@@ -323,7 +335,7 @@ def build_assessment_tab() -> gr.Tab:
                         include_answers = gr.Checkbox(label="Include Answer Key", value=True)
                         include_marking = gr.Checkbox(label="Include Marking Guide", value=True)
                     use_rag = gr.Checkbox(label="Use RAG", value=True)
-                    max_tokens = gr.Slider(512, 4096, value=2048, step=256, label="Max Tokens")
+                    max_tokens = gr.Slider(64, 256, value=128, step=32, label="Max Tokens")
 
                 generate_btn = gr.Button("📋 Generate Assessment", variant="primary")
 
@@ -514,6 +526,19 @@ def build_status_tab() -> gr.Tab:
             rag_btn = gr.Button("Test RAG Retrieval")
             rag_output = gr.Textbox(label="Retrieved Context", lines=10, interactive=False)
 
+        with gr.Accordion("Bootstrap RAG Vectorstore", open=False):
+            gr.Markdown(
+                "_Vectorstore is empty after a fresh deploy or model swap. "
+                "Generate synthetic curriculum text and load it into ChromaDB so RAG has context._"
+            )
+            with gr.Row():
+                ingest_board = gr.Dropdown(CURRICULUM_BOARDS, label="Board", value="NERDC")
+                ingest_subject = gr.Dropdown(SUBJECTS, label="Subject", value="mathematics")
+                ingest_level = gr.Dropdown(EDUCATION_LEVELS, label="Level", value="SSS1")
+            ingest_btn = gr.Button("⚡ Bootstrap RAG (Synthetic)", variant="primary")
+            ingest_status_box = gr.Textbox(label="Ingest Status", interactive=False)
+            ingest_doc_count = gr.Number(label="Documents in Store", interactive=False)
+
         def refresh_status():
             _, health_status = _get("health")
             # Try get skill count
@@ -560,9 +585,49 @@ def build_status_tab() -> gr.Tab:
             except Exception as exc:
                 return f"RAG error: {exc}"
 
+        def run_ingest(board, subject, level):
+            raw, status = _post_params(
+                "ingest/synthetic",
+                {"board": board, "subject": subject, "level": level},
+            )
+            # Also fetch current doc count
+            count = 0
+            try:
+                from app.rag.vectorstore import get_document_count
+                count = get_document_count()
+            except Exception:
+                pass
+            msg = f"{status}"
+            if raw:
+                try:
+                    data = json.loads(raw)
+                    msg = f"{status} — {data.get('message', '')}"
+                except Exception:
+                    pass
+            return msg, count
+
+        def check_ingest_status():
+            raw, _ = _get("ingest/status")
+            count = 0
+            running = False
+            if raw:
+                try:
+                    data = json.loads(raw)
+                    count = data.get("document_count", 0)
+                    running = data.get("ingestion_running", False)
+                except Exception:
+                    pass
+            status_msg = "🔄 Ingestion running…" if running else f"Idle — {count} documents"
+            return status_msg, count
+
         refresh_btn.click(refresh_status, outputs=[health_display, skill_count, chroma_count])
         browse_btn.click(browse_skills, inputs=[domain_filter], outputs=[skills_output])
         rag_btn.click(test_rag, inputs=[rag_query, rag_board, rag_subject], outputs=[rag_output])
+        ingest_btn.click(
+            run_ingest,
+            inputs=[ingest_board, ingest_subject, ingest_level],
+            outputs=[ingest_status_box, ingest_doc_count],
+        )
 
     return tab
 

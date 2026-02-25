@@ -15,7 +15,7 @@ def curriculum_node(state: EnumVerseState) -> EnumVerseState:
         return {**state, "error": "No request in state", "generated_content": None}
 
     rag_context = state.get("rag_context")
-    max_tokens = getattr(request, "max_tokens", 2048)
+    max_tokens = getattr(request, "max_tokens", 256)
 
     try:
         messages = build_curriculum_prompt(request, rag_context=rag_context)

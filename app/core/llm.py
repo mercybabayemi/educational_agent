@@ -1,4 +1,9 @@
-"""LLM loader: LLaMA 3.2 3B (primary) and Mistral 7B (judge) with 4-bit BnB quantization."""
+"""LLM loader: Phi-3-mini-4k-instruct (primary) and TinyLlama-1.1B (judge).
+
+Pipelines are globally cached via lru_cache — models load once per process,
+never reloaded per request. 4-bit BnB quantization is used only when a GPU
+is detected; CPU runs full float32 automatically.
+"""
 from __future__ import annotations
 
 import torch
@@ -16,7 +21,7 @@ from transformers import (
 from app.core.config import settings
 
 
-# ── BitsAndBytes 4-bit config ──────────────────────────────────────────────────
+# ── BitsAndBytes 4-bit config (GPU only) ──────────────────────────────────────
 
 def _bnb_config() -> BitsAndBytesConfig:
     return BitsAndBytesConfig(
@@ -32,22 +37,26 @@ def _bnb_config() -> BitsAndBytesConfig:
 def _load_pipeline(
     model_id: str,
     *,
-    max_new_tokens: int = 2048,
+    max_new_tokens: int = 512,
     use_quantization: bool = True,
 ) -> "pipeline":
-    """Load a text-generation pipeline with optional 4-bit quantization."""
+    """Load a text-generation pipeline, cached globally by the callers.
+
+    On CPU (free HF Space): runs float32, no quantization.
+    On GPU: optionally applies 4-bit BnB quantization.
+    """
     logger.info(f"Loading model: {model_id}")
 
-    device_map = "auto" if torch.cuda.is_available() else "cpu"
+    on_gpu = torch.cuda.is_available()
+    device_map = "auto" if on_gpu else "cpu"
     quantization_config: Optional[BitsAndBytesConfig] = None
 
-    if use_quantization and torch.cuda.is_available():
+    if use_quantization and on_gpu:
         quantization_config = _bnb_config()
         logger.info("4-bit BnB quantization enabled")
     else:
-        logger.warning(
-            "GPU not available or quantization disabled — loading in full precision on CPU. "
-            "This may be slow."
+        logger.info(
+            "Running on CPU / quantization disabled — float32, no BnB."
         )
 
     tokenizer = AutoTokenizer.from_pretrained(
@@ -61,7 +70,7 @@ def _load_pipeline(
         token=settings.hf_token or None,
         quantization_config=quantization_config,
         device_map=device_map,
-        torch_dtype=torch.bfloat16 if torch.cuda.is_available() else torch.float32,
+        torch_dtype=torch.bfloat16 if on_gpu else torch.float32,
         trust_remote_code=True,
     )
     model.eval()
@@ -81,18 +90,18 @@ def _load_pipeline(
     return pipe
 
 
-# ── Public accessors (lazy singletons) ────────────────────────────────────────
+# ── Global singletons (loaded once, reused forever) ───────────────────────────
 
 @lru_cache(maxsize=1)
-def get_llama_pipeline():
-    """LLaMA 3.2 3B Instruct — primary content generation model."""
-    return _load_pipeline(settings.llama_model_id, max_new_tokens=2048)
+def get_phi_pipeline():
+    """Phi-3-mini-4k-instruct — primary content generation model."""
+    return _load_pipeline(settings.main_model_id, max_new_tokens=512)
 
 
 @lru_cache(maxsize=1)
-def get_mistral_pipeline():
-    """Mistral 7B Instruct v0.3 — LLM-as-judge / validation model."""
-    return _load_pipeline(settings.mistral_model_id, max_new_tokens=512)
+def get_judge_pipeline():
+    """TinyLlama 1.1B Chat — LLM-as-judge / validation model."""
+    return _load_pipeline(settings.judge_model_id, max_new_tokens=256)
 
 
 # ── Convenience wrapper ────────────────────────────────────────────────────────
@@ -101,21 +110,24 @@ def generate_text(
     messages: list[dict],
     *,
     use_judge: bool = False,
-    max_new_tokens: int = 1024,
+    max_new_tokens: int = 512,
 ) -> str:
-    """Generate text using the appropriate pipeline.
+    """Generate text using the appropriate cached pipeline.
 
     Args:
         messages: Chat-formatted list of dicts with ``role`` / ``content`` keys.
-        use_judge: If True, use the Mistral judge model; otherwise LLaMA.
+        use_judge: If True, use TinyLlama judge model; otherwise Phi-3-mini.
         max_new_tokens: Override default max new tokens.
 
     Returns:
         Generated text string.
     """
-    pipe = get_mistral_pipeline() if use_judge else get_llama_pipeline()
+    pipe = get_judge_pipeline() if use_judge else get_phi_pipeline()
 
-    # Adjust generation config per call
+    # Clamp to CPU ceiling — prevents multi-minute waits on free Spaces
+    if not torch.cuda.is_available():
+        max_new_tokens = min(max_new_tokens, settings.cpu_max_tokens)
+
     result = pipe(
         messages,
         max_new_tokens=max_new_tokens,

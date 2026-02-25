@@ -15,6 +15,7 @@ from app.schemas.assessment import (
     AssessmentGenerationResponse,
     QuestionItem,
 )
+from app.core.config import settings
 from app.schemas.common import SkillTag, ValidationReport, ValidationStatus
 
 router = APIRouter()
@@ -106,7 +107,7 @@ async def generate_assessment(request: AssessmentGenerationRequest):
         skill_distribution=skill_dist,
         validation=validation,
         rag_metadata=final_state.get("rag_metadata"),
-        model_used="meta-llama/Llama-3.2-3B-Instruct",
+        model_used=settings.main_model_id,
         generation_time_seconds=elapsed,
         created_at=datetime.utcnow(),
         warnings=[],

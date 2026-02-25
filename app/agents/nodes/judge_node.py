@@ -1,4 +1,4 @@
-"""LLM-as-Judge node — Mistral 7B; triggered only on rule failure."""
+"""LLM-as-Judge node — TinyLlama 1.1B; triggered only on rule failure."""
 from __future__ import annotations
 
 from loguru import logger
@@ -9,7 +9,7 @@ from app.validation.judge import run_judge, judge_passes
 
 
 def judge_node(state: EnumVerseState) -> EnumVerseState:
-    """Evaluate content with Mistral 7B and update ValidationReport."""
+    """Evaluate content with TinyLlama 1.1B and update ValidationReport."""
     content = state.get("generated_content") or state.get("final_content") or ""
     request = state.get("request")
 

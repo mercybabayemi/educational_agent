@@ -8,6 +8,7 @@ from datetime import datetime
 from fastapi import APIRouter, HTTPException
 
 from app.agents.graph import get_compiled_graph
+from app.core.config import settings
 from app.schemas.common import RAGMetadata, SkillTag, ValidationReport, ValidationStatus
 from app.schemas.content import ContentGenerationRequest, ContentGenerationResponse
 
@@ -78,7 +79,7 @@ async def generate_content(request: ContentGenerationRequest):
         skill_tags=skill_tags,
         validation=validation,
         rag_metadata=final_state.get("rag_metadata"),
-        model_used="meta-llama/Llama-3.2-3B-Instruct",
+        model_used=settings.main_model_id,
         generation_time_seconds=elapsed,
         token_count=len(content.split()),
         created_at=datetime.utcnow(),

@@ -1,4 +1,4 @@
-"""LLM-as-Judge: Mistral 7B evaluates content on 5 dimensions.
+"""LLM-as-Judge: TinyLlama 1.1B evaluates content on 5 dimensions.
 
 Triggered ONLY when rule-based validation fails.
 Scores 1-5 per dimension; pass threshold = avg ≥ 3.5 AND no single score < 2.
@@ -50,7 +50,7 @@ def run_judge(
     output_language: str = "en",
     failed_rules: Optional[List[str]] = None,
 ) -> Tuple[float, dict, Optional[str]]:
-    """Run the Mistral 7B judge on generated content.
+    """Run the TinyLlama 1.1B judge on generated content.
 
     Returns:
         (average_score, dimension_scores_dict, revision_instruction_or_None)

@@ -1,4 +1,4 @@
-"""Embedding wrapper: intfloat/multilingual-e5-large (1024-dim)."""
+"""Embedding wrapper: distilgpt2 (lightweight, CPU-friendly)."""
 from __future__ import annotations
 
 from functools import lru_cache
@@ -12,13 +12,9 @@ from app.core.config import settings
 
 @lru_cache(maxsize=1)
 def get_embeddings() -> HuggingFaceEmbeddings:
-    """Return a singleton HuggingFaceEmbeddings instance.
+    """Return a globally cached HuggingFaceEmbeddings instance (distilgpt2).
 
-    multilingual-e5-large requires the query prefix "query: " and
-    passage prefix "passage: " to be prepended at encode time.
-    LangChain's HuggingFaceEmbeddings does NOT do this automatically,
-    so we pass model_kwargs to enable mean-pooling and use the
-    encode_kwargs to normalise embeddings.
+    Loaded once per process; subsequent calls return the same object.
     """
     logger.info(f"Loading embedding model: {settings.embedding_model_id}")
     embeddings = HuggingFaceEmbeddings(
@@ -31,16 +27,13 @@ def get_embeddings() -> HuggingFaceEmbeddings:
 
 
 def embed_query(text: str) -> List[float]:
-    """Embed a single query string with the required 'query: ' prefix."""
-    emb = get_embeddings()
-    return emb.embed_query(f"query: {text}")
+    """Embed a single query string."""
+    return get_embeddings().embed_query(text)
 
 
 def embed_documents(texts: List[str]) -> List[List[float]]:
-    """Embed a batch of passages with the required 'passage: ' prefix."""
-    emb = get_embeddings()
-    prefixed = [f"passage: {t}" for t in texts]
-    return emb.embed_documents(prefixed)
+    """Embed a batch of document strings."""
+    return get_embeddings().embed_documents(texts)
 
 
 def _cuda_available() -> bool:
