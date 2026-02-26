@@ -2,10 +2,12 @@
 
 Triggered ONLY when rule-based validation fails.
 Scores 1-5 per dimension; pass threshold = avg ≥ 3.5 AND no single score < 2.
+
+TinyLlama is too small for reliable JSON output, so the prompt asks for
+5 plain  "key: number"  lines which regex can extract robustly.
 """
 from __future__ import annotations
 
-import json
 import re
 from typing import List, Optional, Tuple
 
@@ -25,27 +27,22 @@ DIMENSIONS = [
 ]
 
 
-def _extract_json(text: str) -> Optional[dict]:
-    """Extract JSON object from model output (handles markdown fences and array wrapping)."""
-    # Strip markdown fences
-    clean = re.sub(r"```(?:json)?", "", text).strip().rstrip("`").strip()
+def _extract_scores(text: str) -> Optional[dict]:
+    """Parse 'dimension: N' lines from model output.
 
-    # Model sometimes wraps output in an array: [{...}] — unwrap first element
-    arr_match = re.search(r"\[\s*(\{[\s\S]*?\})\s*\]", clean)
-    if arr_match:
-        try:
-            return json.loads(arr_match.group(1))
-        except json.JSONDecodeError:
-            pass
-
-    # Plain object
-    match = re.search(r"\{[\s\S]*\}", clean)
-    if match:
-        try:
-            return json.loads(match.group())
-        except json.JSONDecodeError:
-            pass
-    return None
+    Accepts any value between 1.0 and 5.0; returns None if fewer than
+    5 dimensions are found so the caller can soft-pass gracefully.
+    """
+    scores = {}
+    for dim in DIMENSIONS:
+        match = re.search(
+            rf"{dim}\s*[:\-]\s*([1-5](?:\.\d+)?)",
+            text,
+            re.IGNORECASE,
+        )
+        if match:
+            scores[dim] = float(match.group(1))
+    return scores if len(scores) == len(DIMENSIONS) else None
 
 
 def run_judge(
@@ -78,40 +75,23 @@ def run_judge(
     )
 
     try:
-        raw = generate_text(messages, use_judge=True, max_new_tokens=320)
+        raw = generate_text(messages, use_judge=True, max_new_tokens=80)
     except Exception as exc:
         logger.error(f"Judge LLM call failed: {exc}")
-        # Soft-pass: don't block content if judge itself errors
         return PASS_THRESHOLD, {d: PASS_THRESHOLD for d in DIMENSIONS}, None
 
-    parsed = _extract_json(raw)
-    if parsed is None:
-        logger.warning(f"Judge returned non-JSON output: {raw[:200]}")
+    scores = _extract_scores(raw)
+    if scores is None:
+        logger.warning(f"Judge output unparseable (got {len(raw)} chars): {raw[:200]}")
         return PASS_THRESHOLD, {d: PASS_THRESHOLD for d in DIMENSIONS}, None
 
-    scores: dict = {}
-    for dim in DIMENSIONS:
-        val = parsed.get(dim)
-        try:
-            scores[dim] = float(val)
-        except (TypeError, ValueError):
-            scores[dim] = PASS_THRESHOLD  # default on parse failure
-
-    avg = parsed.get("average_score")
-    try:
-        avg_score = float(avg)
-    except (TypeError, ValueError):
-        avg_score = sum(scores.values()) / len(scores) if scores else PASS_THRESHOLD
-
-    revision_instruction: Optional[str] = parsed.get("revision_instruction") or None
-    if revision_instruction and not revision_instruction.strip():
-        revision_instruction = None
+    avg_score = sum(scores.values()) / len(scores)
 
     logger.info(
         f"Judge scores: {scores} | avg={avg_score:.2f} | "
         f"{'PASS' if _judge_passes(avg_score, scores) else 'FAIL'}"
     )
-    return avg_score, scores, revision_instruction
+    return avg_score, scores, None
 
 
 def _judge_passes(avg_score: float, dimension_scores: dict) -> bool:

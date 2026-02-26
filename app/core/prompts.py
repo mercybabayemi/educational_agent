@@ -493,36 +493,24 @@ def build_insights_prompt(request) -> list[dict]:
 
 # ── Judge prompt ───────────────────────────────────────────────────────────────
 
-JUDGE_SYSTEM = """You are an expert educational content quality judge specialising in West African and Nigerian curricula.
-Evaluate the provided content on five dimensions and return a JSON response."""
+JUDGE_SYSTEM = "You are an educational content quality scorer. You only output scores as numbers."
 
-JUDGE_HUMAN = """Rate the following educational content on five dimensions. Each score must be a number from 1 to 5 (1=poor, 5=excellent). Do NOT use percentages.
+JUDGE_HUMAN = """Score this {content_type} content on 5 dimensions (1=poor, 5=excellent).
+Reply with ONLY these 5 lines — no other text, no explanation:
 
-CONTENT:
+curriculum_alignment: <1-5>
+bloom_level: <1-5>
+cultural_appropriateness: <1-5>
+language_quality: <1-5>
+educational_value: <1-5>
+
+Context: {subject} | {education_level} | {curriculum_board} | Bloom:{bloom_level} | Lang:{output_language}
+Failed rules: {failed_rules}
+
+Content:
 ---
 {content}
----
-
-REQUEST CONTEXT:
-- Content type: {content_type}
-- Subject: {subject}
-- Education level: {education_level}
-- Curriculum board: {curriculum_board}
-- Target Bloom level: {bloom_level}
-- Output language: {output_language}
-
-FAILED RULES: {failed_rules}
-
-Return ONLY a single valid JSON object (not an array) with this exact structure:
-{{
-  "curriculum_alignment": <1.0-5.0>,
-  "bloom_level": <1.0-5.0>,
-  "cultural_appropriateness": <1.0-5.0>,
-  "language_quality": <1.0-5.0>,
-  "educational_value": <1.0-5.0>,
-  "average_score": <mean of the five scores above, between 1.0 and 5.0>,
-  "revision_instruction": "<one sentence describing what to fix if average_score < 3.5, else empty string>"
-}}"""
+---"""
 
 
 def build_judge_prompt(
