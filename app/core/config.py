@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     chroma_persist_dir: str = "./data/vectorstore"
     backend_url: str = "http://localhost:8000"
     max_tokens_default: int = 256
-    cpu_max_tokens: int = 768        # hard ceiling applied in generate_text on CPU
+    cpu_max_tokens: int = 1024       # hard ceiling applied in generate_text on CPU
     rag_top_k_default: int = 4
     log_level: str = "INFO"
 

@@ -213,6 +213,8 @@ CONTENT_HUMAN = """Create a {content_type} on the topic: "{topic}"
 {cultural_block}
 
 {format_instructions}
+
+Begin the content immediately. Do NOT restate the parameters above as a header or preamble.
 """
 
 CONTENT_FORMAT_MAP: dict[str, str] = {

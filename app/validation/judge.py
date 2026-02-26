@@ -55,13 +55,6 @@ def run_judge(
     Returns:
         (average_score, dimension_scores_dict, revision_instruction_or_None)
     """
-    import torch
-    if not torch.cuda.is_available():
-        # On CPU, TinyLlama inference takes 60+ seconds per call — too slow for
-        # interactive use. Soft-pass so rule-flagged content still reaches the user.
-        logger.info("CPU mode: skipping LLM judge — soft pass")
-        return PASS_THRESHOLD, {d: PASS_THRESHOLD for d in DIMENSIONS}, None
-
     from app.core.llm import generate_text
 
     messages = build_judge_prompt(
@@ -76,7 +69,7 @@ def run_judge(
     )
 
     try:
-        raw = generate_text(messages, use_judge=True, max_new_tokens=512)
+        raw = generate_text(messages, use_judge=True, max_new_tokens=200)
     except Exception as exc:
         logger.error(f"Judge LLM call failed: {exc}")
         # Soft-pass: don't block content if judge itself errors

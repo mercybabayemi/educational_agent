@@ -157,7 +157,7 @@ def build_content_tab() -> gr.Tab:
                     include_teacher_notes = gr.Checkbox(label="Include Teacher Notes", value=False)
                     include_answer_key = gr.Checkbox(label="Include Answer Key", value=True)
                     use_rag = gr.Checkbox(label="Use RAG (curriculum context)", value=True)
-                    max_tokens = gr.Slider(64, 768, value=384, step=64, label="Max Tokens")
+                    max_tokens = gr.Slider(64, 1024, value=512, step=64, label="Max Tokens")
 
                 generate_btn = gr.Button("🚀 Generate Content", variant="primary")
 
