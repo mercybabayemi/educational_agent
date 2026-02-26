@@ -25,7 +25,7 @@ import httpx
 # ── Backend URL ────────────────────────────────────────────────────────────────
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:7860")
 API = f"{BACKEND_URL}/api/v1"
-TIMEOUT = 120.0
+TIMEOUT = 600.0  # CPU inference can take 8+ minutes on free Spaces
 
 
 # ── Shared option lists ────────────────────────────────────────────────────────
