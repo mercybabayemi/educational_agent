@@ -26,10 +26,19 @@ DIMENSIONS = [
 
 
 def _extract_json(text: str) -> Optional[dict]:
-    """Extract JSON object from model output (handles markdown fences)."""
+    """Extract JSON object from model output (handles markdown fences and array wrapping)."""
     # Strip markdown fences
     clean = re.sub(r"```(?:json)?", "", text).strip().rstrip("`").strip()
-    # Find first {...}
+
+    # Model sometimes wraps output in an array: [{...}] — unwrap first element
+    arr_match = re.search(r"\[\s*(\{[\s\S]*?\})\s*\]", clean)
+    if arr_match:
+        try:
+            return json.loads(arr_match.group(1))
+        except json.JSONDecodeError:
+            pass
+
+    # Plain object
     match = re.search(r"\{[\s\S]*\}", clean)
     if match:
         try:
@@ -69,7 +78,7 @@ def run_judge(
     )
 
     try:
-        raw = generate_text(messages, use_judge=True, max_new_tokens=200)
+        raw = generate_text(messages, use_judge=True, max_new_tokens=320)
     except Exception as exc:
         logger.error(f"Judge LLM call failed: {exc}")
         # Soft-pass: don't block content if judge itself errors

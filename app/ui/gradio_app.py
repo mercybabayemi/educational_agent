@@ -25,7 +25,7 @@ import httpx
 # ── Backend URL ────────────────────────────────────────────────────────────────
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:7860")
 API = f"{BACKEND_URL}/api/v1"
-TIMEOUT = 600.0  # CPU inference can take 8+ minutes on free Spaces
+TIMEOUT = 900.0  # CPU inference + judge can take 10+ minutes on free Spaces
 
 
 # ── Shared option lists ────────────────────────────────────────────────────────
@@ -165,6 +165,11 @@ def build_content_tab() -> gr.Tab:
                 output_box = gr.Textbox(label="Generated Content", lines=30, max_lines=60)
                 status_box = gr.Textbox(label="Status", interactive=False)
                 skill_tags_box = gr.JSON(label="Skill Tags")
+                with gr.Accordion("Validation & Judge Scores", open=False):
+                    validation_status_box = gr.Textbox(label="Validation Status", interactive=False)
+                    rules_box = gr.JSON(label="Rules (passed / failed)")
+                    judge_score_box = gr.Number(label="Judge Avg Score (1–5)", interactive=False)
+                    judge_dimensions_box = gr.JSON(label="Judge Dimension Scores")
 
         def run_content(
             subject, topic, content_type, program_type, education_level, curriculum_board,
@@ -199,10 +204,24 @@ def build_content_tab() -> gr.Tab:
             if raw:
                 try:
                     data = json.loads(raw)
-                    return data.get("content", raw), status, data.get("skill_tags", [])
+                    validation = data.get("validation", {})
+                    rules = {
+                        "passed": validation.get("rules_passed", []),
+                        "failed": validation.get("rules_failed", []),
+                        "notes": validation.get("notes", []),
+                    }
+                    return (
+                        data.get("content", raw),
+                        status,
+                        data.get("skill_tags", []),
+                        validation.get("status", ""),
+                        rules,
+                        validation.get("judge_score"),
+                        validation.get("judge_dimensions"),
+                    )
                 except Exception:
-                    return raw, status, []
-            return "", status, []
+                    return raw, status, [], "", {}, None, None
+            return "", status, [], "", {}, None, None
 
         generate_btn.click(
             run_content,
@@ -212,7 +231,10 @@ def build_content_tab() -> gr.Tab:
                 bloom_level, duration, target_skills, include_teacher_notes,
                 include_answer_key, use_rag, max_tokens,
             ],
-            outputs=[output_box, status_box, skill_tags_box],
+            outputs=[
+                output_box, status_box, skill_tags_box,
+                validation_status_box, rules_box, judge_score_box, judge_dimensions_box,
+            ],
         )
     return tab
 
