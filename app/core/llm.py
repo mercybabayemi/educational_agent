@@ -2,7 +2,7 @@
 
 Pipelines are globally cached via lru_cache — models load once per process,
 never reloaded per request. 4-bit BnB quantization is used only when a GPU
-is detected; CPU runs full float32 automatically.
+is detected; CPU runs bfloat16 (halves RAM vs float32, avoids 16 Gi OOM).
 """
 from __future__ import annotations
 
@@ -56,7 +56,7 @@ def _load_pipeline(
         logger.info("4-bit BnB quantization enabled")
     else:
         logger.info(
-            "Running on CPU / quantization disabled — float32, no BnB."
+            "Running on CPU / quantization disabled — bfloat16, no BnB."
         )
 
     tokenizer = AutoTokenizer.from_pretrained(
@@ -70,7 +70,7 @@ def _load_pipeline(
         token=settings.hf_token or None,
         quantization_config=quantization_config,
         device_map=device_map,
-        torch_dtype=torch.bfloat16 if on_gpu else torch.float32,
+        torch_dtype=torch.bfloat16,  # bfloat16 on both GPU and CPU; halves RAM vs float32
         trust_remote_code=True,
     )
     model.eval()
