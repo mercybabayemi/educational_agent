@@ -36,8 +36,8 @@ CHUNK_SIZE = 400   # characters
 CHUNK_OVERLAP = 80
 
 
-def _doc_id(text: str, source: str, board: str) -> str:
-    key = text[:200] + source + board
+def _doc_id(text: str, source: str, board: str, idx: int = 0) -> str:
+    key = text[:200] + source + board + str(idx)
     return hashlib.sha256(key.encode()).hexdigest()[:16]
 
 
@@ -56,8 +56,9 @@ def get_collection():
     try:
         import chromadb
         from chromadb.config import Settings
+        from chromadb.utils.embedding_functions import DefaultEmbeddingFunction
     except ImportError:
-        print("Install chromadb: conda run -n datasci pip install chromadb")
+        print("Install chromadb: conda run -n datasci pip install 'chromadb[default]'")
         sys.exit(1)
 
     CHROMA_DIR.mkdir(parents=True, exist_ok=True)
@@ -65,19 +66,9 @@ def get_collection():
         path=str(CHROMA_DIR),
         settings=Settings(anonymized_telemetry=False),
     )
-    return client.get_or_create_collection(COLLECTION_NAME)
-
-
-def get_embeddings(texts: List[str]) -> List[List[float]]:
-    try:
-        from sentence_transformers import SentenceTransformer
-    except ImportError:
-        print("Install sentence-transformers: conda run -n datasci pip install sentence-transformers")
-        sys.exit(1)
-
-    model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-    embeddings = model.encode(texts, batch_size=64, show_progress_bar=True, convert_to_list=True)
-    return embeddings
+    # DefaultEmbeddingFunction uses all-MiniLM-L6-v2 via ONNX — no torch needed
+    ef = DefaultEmbeddingFunction()
+    return client.get_or_create_collection(COLLECTION_NAME, embedding_function=ef)
 
 
 def ingest_dataset(key: str, collection) -> int:
@@ -97,6 +88,7 @@ def ingest_dataset(key: str, collection) -> int:
     print(f"  {key}: {len(df):,} rows → chunking...")
 
     texts, metadatas, ids = [], [], []
+    global_idx = 0
     for _, row in df.iterrows():
         text = str(row.get("text", ""))
         if len(text) < 20:
@@ -110,27 +102,27 @@ def ingest_dataset(key: str, collection) -> int:
                 "topic": str(row.get("topic", "")),
                 "dataset_key": key,
             }
-            doc_id = _doc_id(chunk, meta["source"], meta["board"])
+            doc_id = _doc_id(chunk, meta["source"], meta["board"], global_idx)
             texts.append(chunk)
             metadatas.append(meta)
             ids.append(doc_id)
+            global_idx += 1
 
     if not texts:
         print(f"  SKIP {key}: no valid chunks")
         return 0
 
-    print(f"  {key}: {len(texts):,} chunks → computing embeddings...")
-    embeddings = get_embeddings(texts)
+    print(f"  {key}: {len(texts):,} chunks → upserting (embeddings computed by collection)...")
 
-    # Batch upsert (chromadb accepts max ~5000 per call)
-    batch = 2000
+    # Batch upsert — collection's embedding_function handles vectorisation
+    batch = 500
     for i in range(0, len(texts), batch):
         collection.upsert(
             documents=texts[i:i+batch],
-            embeddings=embeddings[i:i+batch],
             metadatas=metadatas[i:i+batch],
             ids=ids[i:i+batch],
         )
+        print(f"    batch {i//batch + 1}/{-(-len(texts)//batch)} done")
     print(f"  {key}: ingested {len(texts):,} chunks ✓")
     return len(texts)
 
