@@ -1,0 +1,144 @@
+{
+  "run_at": "2026-03-04T11:33:39.064979Z",
+  "golden_dir": "research/evaluation/ablation_set/full_raq",
+  "n_examples": 5,
+  "results": [
+    {
+      "bloom_accuracy": 1.0,
+      "cultural_name_ratio": 1.0,
+      "format_compliance": 1.0,
+      "skill_tag_precision": 1.0,
+      "readability_ease": 50.0,
+      "rouge_l": 0.1053,
+      "language_accuracy": 0.5,
+      "raq_status": "PASSED",
+      "raq_judge_score": null,
+      "raq_rules_failed": 0,
+      "raq_revision_count": 0,
+      "raq_pass": 1,
+      "file": "biology_lesson.json",
+      "content_type": "LESSON_PLAN",
+      "expected_bloom": "UNDERSTAND"
+    },
+    {
+      "bloom_accuracy": 1.0,
+      "cultural_name_ratio": 1.0,
+      "format_compliance": 1.0,
+      "skill_tag_precision": 1.0,
+      "readability_ease": 50.0,
+      "rouge_l": 0.139,
+      "language_accuracy": 0.5,
+      "raq_status": "PASSED",
+      "raq_judge_score": null,
+      "raq_rules_failed": 0,
+      "raq_revision_count": 0,
+      "raq_pass": 1,
+      "file": "chemistry_lesson.json",
+      "content_type": "QUIZ",
+      "expected_bloom": "EVALUATE"
+    },
+    {
+      "bloom_accuracy": 1.0,
+      "cultural_name_ratio": 1.0,
+      "format_compliance": 1.0,
+      "skill_tag_precision": 1.0,
+      "readability_ease": 50.0,
+      "rouge_l": 0.1095,
+      "language_accuracy": 0.5,
+      "raq_status": "PASSED",
+      "raq_judge_score": null,
+      "raq_rules_failed": 0,
+      "raq_revision_count": 0,
+      "raq_pass": 1,
+      "file": "economics_lesson.json",
+      "content_type": "EXAM_QUESTIONS",
+      "expected_bloom": "EVALUATE"
+    },
+    {
+      "bloom_accuracy": 1.0,
+      "cultural_name_ratio": 1.0,
+      "format_compliance": 1.0,
+      "skill_tag_precision": 1.0,
+      "readability_ease": 50.0,
+      "rouge_l": 0.129,
+      "language_accuracy": 0.5,
+      "raq_status": "REVISED",
+      "raq_judge_score": null,
+      "raq_rules_failed": 1,
+      "raq_revision_count": 1,
+      "raq_pass": 0,
+      "file": "geography_lesson.json",
+      "content_type": "LESSON_PLAN",
+      "expected_bloom": "APPLY"
+    },
+    {
+      "bloom_accuracy": 1.0,
+      "cultural_name_ratio": 1.0,
+      "format_compliance": 1.0,
+      "skill_tag_precision": 0.67,
+      "readability_ease": 50.0,
+      "rouge_l": 0.1164,
+      "language_accuracy": 0.5,
+      "raq_status": "FLAGGED",
+      "raq_judge_score": 0.63,
+      "raq_rules_failed": 0,
+      "raq_revision_count": 0,
+      "raq_pass": 1,
+      "file": "physics_scheme.json",
+      "content_type": "SCHEME_OF_WORK",
+      "expected_bloom": "ANALYZE"
+    }
+  ],
+  "aggregate": {
+    "bloom_accuracy": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 5
+    },
+    "cultural_name_ratio": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 5
+    },
+    "format_compliance": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 5
+    },
+    "skill_tag_precision": {
+      "mean": 0.934,
+      "std": 0.1476,
+      "n": 5
+    },
+    "readability_ease": {
+      "mean": 50.0,
+      "std": 0.0,
+      "n": 5
+    },
+    "rouge_l": {
+      "mean": 0.1198,
+      "std": 0.014,
+      "n": 5
+    },
+    "language_accuracy": {
+      "mean": 0.5,
+      "std": 0.0,
+      "n": 5
+    },
+    "raq_judge_score": {
+      "mean": 0.63,
+      "std": 0.0,
+      "n": 1
+    },
+    "raq_revision_count": {
+      "mean": 0.2,
+      "std": 0.4472,
+      "n": 5
+    },
+    "raq_pass": {
+      "mean": 0.8,
+      "std": 0.4472,
+      "n": 5
+    }
+  }
+}

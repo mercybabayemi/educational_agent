@@ -194,7 +194,7 @@ def main():
     parser.add_argument(
         "--golden-dir",
         type=Path,
-        default=Path("tests/eval/golden_set"),
+        default=Path("research/evaluation/golden_set"),
         help="Directory containing golden set JSON files",
     )
     parser.add_argument("--output", type=Path, default=None, help="Save results to JSON file")

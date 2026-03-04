@@ -162,6 +162,86 @@ def ingest_hf_dataset(
     return len(chunks)
 
 
+# ── Nigerian education datasets (from local Parquet cache) ─────────────────────
+
+_NIGERIAN_CACHE_DIR = Path(__file__).parent.parent.parent.parent / "data" / "raw" / "nigerian_education"
+
+_NIGERIAN_REGISTRY: dict[str, dict] = {
+    "vocational":            {"board": "NABTEB", "subject": "trade_skill",     "level": "VOCATIONAL_ADVANCED"},
+    "continuous_assessment": {"board": "NERDC",  "subject": "general",         "level": "SSS1"},
+    "digital_learning":      {"board": "NERDC",  "subject": "digital_literacy", "level": "SSS1"},
+    "online_exams":          {"board": "WAEC",   "subject": "general",         "level": "SSS2"},
+    "learning_materials":    {"board": "NERDC",  "subject": "general",         "level": "JSS3"},
+    "teacher_training":      {"board": "NERDC",  "subject": "general",         "level": "TEACHER_TRAINING"},
+    "special_needs":         {"board": "UBEC",   "subject": "general",         "level": "PRIMARY_4_6"},
+}
+
+
+def ingest_nigerian_education(
+    dataset_keys: Optional[List[str]] = None,
+) -> int:
+    """Ingest cached Nigerian education Parquet files into ChromaDB.
+
+    Downloads must have been run first via:
+        python research/datasets/download_hf_datasets.py --all --save-only
+
+    Args:
+        dataset_keys: list of keys from _NIGERIAN_REGISTRY, or None for all.
+
+    Returns:
+        Total number of chunks ingested.
+    """
+    try:
+        import pandas as pd  # type: ignore
+    except ImportError:
+        logger.error("Run: pip install pandas pyarrow")
+        return 0
+
+    keys = dataset_keys or list(_NIGERIAN_REGISTRY.keys())
+    total = 0
+
+    for key in keys:
+        parquet_path = _NIGERIAN_CACHE_DIR / key / f"{key}.parquet"
+        if not parquet_path.exists():
+            logger.warning(f"Cache miss: {key} — run download_hf_datasets.py first")
+            continue
+
+        cfg = _NIGERIAN_REGISTRY[key]
+        df = pd.read_parquet(parquet_path)
+        logger.info(f"Ingesting {key} ({len(df):,} rows) from cache...")
+
+        docs: List[Document] = []
+        for _, row in df.iterrows():
+            text = str(row.get("text", ""))
+            if len(text) < 20:
+                continue
+            meta = {
+                "source": f"nigerian_education:{key}",
+                "board": str(row.get("board", cfg["board"])),
+                "subject": str(row.get("subject", cfg["subject"])),
+                "level": str(row.get("level", cfg["level"])),
+                "topic": str(row.get("topic", "")),
+                "dataset_key": key,
+                "synthetic": False,
+            }
+            docs.append(Document(page_content=text, metadata=meta))
+
+        if not docs:
+            logger.warning(f"No valid docs for {key}")
+            continue
+
+        chunks = chunk_documents(docs)
+        texts     = [c.page_content for c in chunks]
+        metadatas = [{**c.metadata} for c in chunks]
+        ids       = [_doc_id(c.page_content, c.metadata) for c in chunks]
+
+        add_documents(texts=texts, metadatas=metadatas, ids=ids)
+        logger.success(f"Ingested {len(chunks):,} chunks from {key}")
+        total += len(chunks)
+
+    return total
+
+
 # ── CLI ────────────────────────────────────────────────────────────────────────
 
 def _parse_args() -> argparse.Namespace:
@@ -176,6 +256,10 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--dataset", default="castorini/mr-tydi", help="HF dataset name")
     p.add_argument("--language", default="english", help="HF dataset language subset")
     p.add_argument("--max-examples", type=int, default=500, help="Max HF examples to ingest")
+    p.add_argument("--nigerian-education", action="store_true",
+                   help="Ingest cached Nigerian education datasets (run download_hf_datasets.py first)")
+    p.add_argument("--nigerian-datasets", nargs="+", choices=list(_NIGERIAN_REGISTRY.keys()),
+                   help="Specific Nigerian dataset keys to ingest (default: all cached)")
     return p.parse_args()
 
 
@@ -185,6 +269,8 @@ if __name__ == "__main__":
 
     if args.synthetic:
         total += ingest_synthetic(board=args.board, subject=args.subject, level=args.level)
+    elif args.nigerian_education:
+        total += ingest_nigerian_education(dataset_keys=args.nigerian_datasets)
     elif args.hf_dataset:
         total += ingest_hf_dataset(args.dataset, args.language, args.max_examples)
     elif args.file:

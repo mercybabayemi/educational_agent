@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:tsgncjpmefvt.sg.larksuite.com)",
-      "WebFetch(domain:pypi.org)"
+      "WebFetch(domain:pypi.org)",
+      "WebSearch"
     ]
   }
 }
