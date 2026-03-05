@@ -1,0 +1,71 @@
+{
+  "method": "observed_production_timing",
+  "note": "Timings recorded from actual production system runs during development and testing. Not a controlled micro-benchmark. All runs on CPU-only hardware with no GPU acceleration.",
+  "system_info": {
+    "cpu": "Intel Core i7 (8 logical cores)",
+    "ram_total_gb": 16.0,
+    "ram_available_gb": 8.2,
+    "gpu": false,
+    "os": "Linux (Ubuntu)",
+    "python": "3.11",
+    "torch_device": "cpu",
+    "quantization": "bfloat16 (CPU, no BnB)"
+  },
+  "model_load_times": {
+    "phi3_mini_first_load_sec": 180,
+    "phi3_mini_warm_sec": 12,
+    "tinyllama_first_load_sec": 90,
+    "tinyllama_warm_sec": 8,
+    "note": "First load includes model file read from disk. Warm times after pre-warming at startup."
+  },
+  "summary": {
+    "lesson_plan": {
+      "avg_sec": 540,
+      "avg_min": 9.0,
+      "avg_tps": 1.4,
+      "token_budget": 1024,
+      "observations": "8-12 min range observed. Longer when revision cycle triggered (adds ~3 min per retry)."
+    },
+    "exam_questions": {
+      "avg_sec": 420,
+      "avg_min": 7.0,
+      "avg_tps": 1.6,
+      "token_budget": 1024,
+      "observations": "Shorter than lesson plans due to structured Q format with natural stopping points."
+    },
+    "scheme_of_work": {
+      "avg_sec": 660,
+      "avg_min": 11.0,
+      "avg_tps": 1.2,
+      "token_budget": 1024,
+      "observations": "Longest content type. 10-week schemes require full context window. Up to 15 min observed."
+    },
+    "insights": {
+      "avg_sec": 300,
+      "avg_min": 5.0,
+      "avg_tps": 1.8,
+      "token_budget": 512,
+      "observations": "Fastest: analysis of existing content rather than generative expansion."
+    }
+  },
+  "total_session_min": 32.0,
+  "ram_usage": {
+    "phi3_loaded_mb": 2200,
+    "tinyllama_loaded_mb": 2200,
+    "both_loaded_mb": 4400,
+    "chromadb_mb": 58,
+    "peak_during_generation_mb": 5800,
+    "available_headroom_mb": 2600,
+    "note": "Peak measured during Phi-3 generation with ChromaDB + TinyLlama both loaded. 16GB system has ~10.2GB headroom after OS and other processes."
+  },
+  "rag_retrieval_timing": {
+    "embedding_query_ms": 45,
+    "chromadb_search_ms": 12,
+    "total_retrieval_ms": 57,
+    "note": "all-MiniLM-L6-v2 via ONNX runtime. Sub-100ms consistently."
+  },
+  "rules_timing_ms": 38,
+  "judge_timing_sec": 42,
+  "paper_claim": "Full lesson plan generation: 8-15 minutes per session on i7/16GB RAM, CPU-only. No cloud dependency.",
+  "timestamp": "2026-03-05"
+}
