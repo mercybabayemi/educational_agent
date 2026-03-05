@@ -1,0 +1,231 @@
+{
+  "threshold_ablation": {
+    "0.4": {
+      "threshold": 0.4,
+      "pass_count": 146,
+      "applicable": 146,
+      "pass_rate": 100.0
+    },
+    "0.5": {
+      "threshold": 0.5,
+      "pass_count": 146,
+      "applicable": 146,
+      "pass_rate": 100.0
+    },
+    "0.6": {
+      "threshold": 0.6,
+      "pass_count": 146,
+      "applicable": 146,
+      "pass_rate": 100.0
+    },
+    "0.7": {
+      "threshold": 0.7,
+      "pass_count": 146,
+      "applicable": 146,
+      "pass_rate": 100.0
+    },
+    "0.8": {
+      "threshold": 0.8,
+      "pass_count": 146,
+      "applicable": 146,
+      "pass_rate": 100.0
+    }
+  },
+  "recommended_threshold": 0.4,
+  "bloom_verb_audit": {
+    "REMEMBER": {
+      "ak_count": 17,
+      "prod_count": 15,
+      "shared": [
+        "define",
+        "identify",
+        "label",
+        "list",
+        "match",
+        "memorise",
+        "memorize",
+        "name",
+        "recall",
+        "recognise",
+        "recognize",
+        "repeat",
+        "select",
+        "state"
+      ],
+      "missing_from_production": [
+        "duplicate",
+        "locate",
+        "reproduce"
+      ],
+      "extensions_beyond_ak": [
+        "know"
+      ]
+    },
+    "UNDERSTAND": {
+      "ak_count": 21,
+      "prod_count": 15,
+      "shared": [
+        "classify",
+        "describe",
+        "discuss",
+        "explain",
+        "give examples",
+        "interpret",
+        "locate",
+        "paraphrase",
+        "report",
+        "summarise",
+        "summarize"
+      ],
+      "missing_from_production": [
+        "compare",
+        "exemplify",
+        "identify",
+        "illustrate",
+        "infer",
+        "instantiate",
+        "recognise",
+        "recognize",
+        "select",
+        "translate"
+      ],
+      "extensions_beyond_ak": [
+        "express",
+        "review",
+        "tell",
+        "understand"
+      ]
+    },
+    "APPLY": {
+      "ak_count": 23,
+      "prod_count": 15,
+      "shared": [
+        "apply",
+        "calculate",
+        "carry out",
+        "complete",
+        "demonstrate",
+        "execute",
+        "implement",
+        "perform",
+        "practice",
+        "practise",
+        "show",
+        "solve",
+        "use"
+      ],
+      "missing_from_production": [
+        "choose",
+        "dramatise",
+        "dramatize",
+        "employ",
+        "illustrate",
+        "interpret",
+        "operate",
+        "schedule",
+        "sketch",
+        "write"
+      ],
+      "extensions_beyond_ak": [
+        "model",
+        "present"
+      ]
+    },
+    "ANALYZE": {
+      "ak_count": 27,
+      "prod_count": 15,
+      "shared": [
+        "analyse",
+        "analyze",
+        "break down",
+        "categorise",
+        "categorize",
+        "compare",
+        "contrast",
+        "differentiate",
+        "distinguish",
+        "examine",
+        "investigate",
+        "order",
+        "question",
+        "separate",
+        "test"
+      ],
+      "missing_from_production": [
+        "appraise",
+        "attribute",
+        "criticise",
+        "criticize",
+        "deconstruct",
+        "discriminate",
+        "experiment",
+        "infer",
+        "organise",
+        "organize",
+        "relate",
+        "select"
+      ],
+      "extensions_beyond_ak": []
+    },
+    "EVALUATE": {
+      "ak_count": 21,
+      "prod_count": 14,
+      "shared": [
+        "argue",
+        "assess",
+        "critique",
+        "decide",
+        "defend",
+        "evaluate",
+        "judge",
+        "justify",
+        "measure",
+        "rank",
+        "rate",
+        "recommend",
+        "review",
+        "select"
+      ],
+      "missing_from_production": [
+        "appraise",
+        "conclude",
+        "prioritise",
+        "prioritize",
+        "support",
+        "value",
+        "weigh"
+      ],
+      "extensions_beyond_ak": []
+    },
+    "CREATE": {
+      "ak_count": 20,
+      "prod_count": 14,
+      "shared": [
+        "build",
+        "compose",
+        "construct",
+        "create",
+        "design",
+        "develop",
+        "formulate",
+        "generate",
+        "invent",
+        "make",
+        "plan",
+        "produce",
+        "propose",
+        "write"
+      ],
+      "missing_from_production": [
+        "assemble",
+        "combine",
+        "compile",
+        "devise",
+        "hypothesise",
+        "hypothesize"
+      ],
+      "extensions_beyond_ak": []
+    }
+  },
+  "citation": "Anderson, L.W. & Krathwohl, D.R. (2001). A Taxonomy for Learning, Teaching and Assessing. Longman."
+}

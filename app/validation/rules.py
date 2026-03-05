@@ -8,21 +8,44 @@ from typing import List, Optional, Tuple
 from loguru import logger
 
 
-# ── Bloom verb banks (for bloom_verb_presence check) ──────────────────────────
+# ── Bloom verb banks (Anderson & Krathwohl, 2001 revised taxonomy) ─────────────
+# Canonical verbs from: Anderson, L.W. & Krathwohl, D.R. (2001).
+# A Taxonomy for Learning, Teaching and Assessing. Longman.
+# Extensions marked (*) are beyond A&K canonical list, retained for
+# Nigerian curriculum alignment (common in NERDC/WAEC marking schemes).
 
 BLOOM_VERBS_BY_LEVEL: dict[str, List[str]] = {
-    "REMEMBER":   ["define", "list", "recall", "name", "identify", "state", "memorise", "memorize",
-                   "know", "recognise", "recognize", "repeat", "match", "label", "select"],
-    "UNDERSTAND": ["explain", "describe", "summarise", "summarize", "paraphrase", "interpret", "classify", "give examples",
-                   "understand", "discuss", "express", "locate", "report", "review", "tell"],
-    "APPLY":      ["solve", "use", "demonstrate", "calculate", "apply", "carry out", "execute", "implement",
-                   "practise", "practice", "show", "complete", "model", "perform", "present"],
-    "ANALYZE":    ["analyse", "analyze", "compare", "contrast", "distinguish", "examine", "break down", "differentiate",
-                   "investigate", "question", "test", "categorise", "categorize", "separate", "order"],
-    "EVALUATE":   ["evaluate", "justify", "assess", "critique", "judge", "argue", "defend",
-                   "review", "measure", "recommend", "rank", "select", "decide", "rate"],
-    "CREATE":     ["design", "create", "compose", "construct", "develop", "produce", "plan",
-                   "write", "make", "build", "generate", "formulate", "invent", "propose"],
+    "REMEMBER":   ["define", "duplicate", "list", "memorise", "memorize", "recall",
+                   "repeat", "reproduce", "state", "recognise", "recognize",
+                   "identify", "name", "label", "match", "select", "locate",
+                   "know"],                                                         # *
+    "UNDERSTAND": ["classify", "describe", "discuss", "explain", "identify",
+                   "locate", "recognise", "recognize", "report", "select",
+                   "translate", "paraphrase", "summarise", "summarize",
+                   "interpret", "exemplify", "infer", "compare",
+                   "give examples", "illustrate",
+                   "express", "tell", "review", "understand"],                      # *
+    "APPLY":      ["choose", "demonstrate", "dramatise", "dramatize",
+                   "employ", "illustrate", "interpret", "operate",
+                   "schedule", "sketch", "solve", "use", "write",
+                   "carry out", "execute", "implement", "apply",
+                   "calculate", "complete", "show", "practise", "practice",
+                   "perform", "model", "present"],                                  # *
+    "ANALYZE":    ["appraise", "compare", "contrast", "criticise", "criticize",
+                   "differentiate", "discriminate", "distinguish", "examine",
+                   "experiment", "question", "test", "analyse", "analyze",
+                   "break down", "categorise", "categorize", "separate",
+                   "order", "attribute", "organise", "organize", "deconstruct",
+                   "investigate", "relate", "infer"],
+    "EVALUATE":   ["appraise", "argue", "defend", "judge", "select",
+                   "support", "value", "evaluate", "critique", "assess",
+                   "justify", "recommend", "rate", "rank", "measure",
+                   "decide", "review", "weigh", "conclude",
+                   "prioritise", "prioritize"],
+    "CREATE":     ["assemble", "construct", "create", "design", "develop",
+                   "formulate", "write", "plan", "produce", "generate",
+                   "invent", "make", "build", "compose", "hypothesise",
+                   "hypothesize", "propose", "combine", "compile", "devise"],
 }
 
 # ── Profanity / explicit content blocklist (non-exhaustive) ───────────────────
