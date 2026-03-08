@@ -19,7 +19,7 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 CHROMA_DIR = PROJECT_ROOT / "data" / "vectorstore"
-COLLECTION_NAME = "enumverse_curriculum"
+COLLECTION_NAME = "afriped_curriculum"
 RAW_DIR = PROJECT_ROOT / "data" / "raw" / "nigerian_education"
 
 REGISTRY: dict[str, dict] = {

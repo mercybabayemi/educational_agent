@@ -3,12 +3,12 @@ from __future__ import annotations
 
 from loguru import logger
 
-from app.agents.state import EnumVerseState
+from app.agents.state import AfriPedState
 from app.schemas.common import ValidationReport, ValidationStatus
 from app.validation.judge import run_judge, judge_passes
 
 
-def judge_node(state: EnumVerseState) -> EnumVerseState:
+def judge_node(state: AfriPedState) -> AfriPedState:
     """Evaluate content with TinyLlama 1.1B and update ValidationReport."""
     content = state.get("generated_content") or state.get("final_content") or ""
     request = state.get("request")

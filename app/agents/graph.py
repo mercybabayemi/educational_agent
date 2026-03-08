@@ -5,7 +5,7 @@ from typing import Literal
 
 from langgraph.graph import StateGraph, END
 
-from app.agents.state import EnumVerseState
+from app.agents.state import AfriPedState
 from app.agents.nodes.retrieve_node import retrieve_node
 from app.agents.nodes.curriculum_node import curriculum_node
 from app.agents.nodes.generate_node import generate_node
@@ -19,13 +19,13 @@ from app.agents.nodes.revise_node import revise_node
 
 # ── Edge condition functions ───────────────────────────────────────────────────
 
-def route_by_pillar(state: EnumVerseState) -> Literal[
+def route_by_pillar(state: AfriPedState) -> Literal[
     "curriculum", "content", "assessment", "insights"
 ]:
     return state.get("pillar", "content")
 
 
-def should_use_rag(state: EnumVerseState) -> Literal["retrieve", "curriculum", "content", "assessment"]:
+def should_use_rag(state: AfriPedState) -> Literal["retrieve", "curriculum", "content", "assessment"]:
     request = state.get("request")
     use_rag = getattr(request, "use_rag", True) if request else False
     pillar = state.get("pillar", "content")
@@ -34,11 +34,11 @@ def should_use_rag(state: EnumVerseState) -> Literal["retrieve", "curriculum", "
     return pillar  # skip retrieval
 
 
-def after_retrieve(state: EnumVerseState) -> Literal["curriculum", "content", "assessment"]:
+def after_retrieve(state: AfriPedState) -> Literal["curriculum", "content", "assessment"]:
     return state.get("pillar", "content")
 
 
-def after_rules(state: EnumVerseState) -> Literal["end", "judge"]:
+def after_rules(state: AfriPedState) -> Literal["end", "judge"]:
     report = state.get("validation_report")
     if report is None:
         return "end"
@@ -52,7 +52,7 @@ def after_rules(state: EnumVerseState) -> Literal["end", "judge"]:
     return "judge"
 
 
-def after_judge(state: EnumVerseState) -> Literal["end", "revise"]:
+def after_judge(state: AfriPedState) -> Literal["end", "revise"]:
     from app.schemas.common import ValidationStatus
     report = state.get("validation_report")
     revision_count = state.get("revision_count", 0)
@@ -73,7 +73,7 @@ def after_judge(state: EnumVerseState) -> Literal["end", "revise"]:
 # ── Build graph ────────────────────────────────────────────────────────────────
 
 def build_graph() -> StateGraph:
-    g = StateGraph(EnumVerseState)
+    g = StateGraph(AfriPedState)
 
     # Add all nodes
     g.add_node("retrieve", retrieve_node)

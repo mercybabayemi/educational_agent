@@ -7,7 +7,7 @@ from typing import List
 
 from loguru import logger
 
-from app.agents.state import EnumVerseState
+from app.agents.state import AfriPedState
 from app.skills.library import get_skill_library
 
 
@@ -119,7 +119,7 @@ def _analyse_cultural(text: str):
     }
 
 
-def insights_node(state: EnumVerseState) -> EnumVerseState:
+def insights_node(state: AfriPedState) -> AfriPedState:
     """Run all enabled diagnostic checks and populate state with results."""
     request = state.get("request")
     if request is None:

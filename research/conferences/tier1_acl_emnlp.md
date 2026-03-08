@@ -28,7 +28,7 @@ ACL 2026 explicitly themes around explainability of LLMs and evaluation methodol
 ### Demo track strategy (submit April 2026)
 **What they want:** Running system, clean UI, live demo, GitHub with reproducible code.
 **Your assets:** Gradio UI on HuggingFace Spaces, FastAPI backend, 4 working endpoints.
-**Title:** *"EnumVerse: A CPU-Deployable Educational AI System for African Curriculum Alignment"*
+**Title:** *"AfriPed: A CPU-Deployable Educational AI System for African Curriculum Alignment"*
 **Key demo moment:** Show the same prompt with RAQ on vs. RAQ off — let reviewers see the difference in Bloom depth and cultural authenticity.
 
 ---

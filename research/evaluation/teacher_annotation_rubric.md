@@ -1,5 +1,5 @@
 # Teacher Annotation Rubric
-**Project:** EnumVerse AI — Nigerian Curriculum Content Evaluation
+**Project:** AfriPed — Nigerian Curriculum Content Evaluation
 **Purpose:** Validate AI-generated educational content against practicing Nigerian teacher judgment
 **Estimated time per annotator:** 45–60 minutes (20 examples)
 

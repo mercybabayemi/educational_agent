@@ -3,11 +3,11 @@ from __future__ import annotations
 
 from loguru import logger
 
-from app.agents.state import EnumVerseState
+from app.agents.state import AfriPedState
 from app.rag.retriever import retrieve
 
 
-def retrieve_node(state: EnumVerseState) -> EnumVerseState:
+def retrieve_node(state: AfriPedState) -> AfriPedState:
     """Retrieve relevant curriculum chunks and store in state."""
     request = state.get("request")
     if request is None:

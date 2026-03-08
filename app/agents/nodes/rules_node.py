@@ -3,12 +3,12 @@ from __future__ import annotations
 
 from loguru import logger
 
-from app.agents.state import EnumVerseState
+from app.agents.state import AfriPedState
 from app.schemas.common import ValidationReport, ValidationStatus
 from app.validation.rules import run_all_rules
 
 
-def rules_node(state: EnumVerseState) -> EnumVerseState:
+def rules_node(state: AfriPedState) -> AfriPedState:
     """Run all rule-based checks and write ValidationReport to state."""
     content = state.get("generated_content") or state.get("final_content") or ""
     request = state.get("request")

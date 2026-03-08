@@ -3,12 +3,12 @@ from __future__ import annotations
 
 from loguru import logger
 
-from app.agents.state import EnumVerseState
+from app.agents.state import AfriPedState
 from app.core.llm import generate_text
 from app.core.prompts import build_content_prompt
 
 
-def generate_node(state: EnumVerseState) -> EnumVerseState:
+def generate_node(state: AfriPedState) -> AfriPedState:
     """Generate educational content for Pillar 2."""
     request = state.get("request")
     if request is None:

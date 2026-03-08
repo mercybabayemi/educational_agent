@@ -245,7 +245,7 @@ def ingest_nigerian_education(
 # ── CLI ────────────────────────────────────────────────────────────────────────
 
 def _parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(description="EnumVerse RAG ingestion pipeline")
+    p = argparse.ArgumentParser(description="AfriPed RAG ingestion pipeline")
     p.add_argument("--input-dir", type=Path, help="Directory of PDF/DOCX curriculum files")
     p.add_argument("--file", type=Path, help="Single file to ingest")
     p.add_argument("--board", default="NERDC", help="Curriculum board tag")

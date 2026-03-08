@@ -145,7 +145,7 @@ def main() -> None:
     output_path = PROJECT_ROOT / args.output
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
-    print("=== EnumVerse AI — CPU Hardware Benchmark ===\n")
+    print("=== AfriPed — CPU Hardware Benchmark ===\n")
     system_info = {
         "ram":       _system_ram(),
         "cpu":       _cpu_info(),

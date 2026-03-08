@@ -1,18 +1,16 @@
 ---
-title: EnumVerse Educational AI
+title: AfriPed Educational AI
 emoji: 📚
-colorFrom: blue
+colorFrom: green
 colorTo: yellow
-sdk: gradio
-sdk_version: 4.44.1
-app_file: app.py
-hardware: t4-medium
+sdk: docker
+hardware: cpu-upgrade
 python_version: "3.11"
 ---
 
-# EnumVerse AI
+# AfriPed
 
-AI-powered educational content generation for Nigerian and West African learners.
+AI-powered educational content generation for Nigerian learners.
 
 ## Four Pillars
 

@@ -1,4 +1,4 @@
-# When ROUGE Lies: Evaluating AI-Generated Educational Content for West African Classrooms
+# When ROUGE Lies: Evaluating AI-Generated Educational Content for Nigerian Classrooms
 
 **Track:** Late Breaking Results
 **Conference:** AIED 2026 — 27th International Conference on Artificial Intelligence in Education
@@ -11,21 +11,21 @@
 
 ## Abstract
 
-Standard NLP evaluation metrics actively mislead when applied to African educational content quality assessment. We demonstrate this empirically: across 41 pooled examples, ROUGE-L negatively correlates with pedagogical quality (Pearson ρ = −0.34), with unvalidated outputs achieving higher ROUGE-L (0.205) than our validated system (0.120) despite dramatically worse Bloom taxonomy alignment (0.25 vs. 0.95). We present Rule-Augmented Questioning (RAQ) — a domain-specific evaluation framework combining eight deterministic curriculum-alignment rules with a five-dimensional LLM judge — deployed within EnumVerse AI, a CPU-native system generating NERDC- and WAEC-aligned lesson plans, assessments, and curriculum schemes for Nigerian learners. The system runs entirely on consumer CPU hardware (8–15 minutes per session, no cloud dependency). RAQ-validated outputs achieve bloom_accuracy of 0.95 and cultural_name_ratio of 1.00 on 20 golden examples. We argue that domain-specific evaluation frameworks are not optional for African educational AI — they are essential — and release all code and evaluation infrastructure to support this claim.
+Standard NLP evaluation metrics actively mislead when applied to Nigerian educational content quality assessment. We demonstrate this empirically: across 41 pooled examples, ROUGE-L negatively correlates with pedagogical quality (Pearson ρ = −0.45), with unvalidated outputs achieving higher ROUGE-L (0.149) than our validated system (0.087) despite dramatically worse Bloom taxonomy alignment (0.25 vs. 0.95). We present Rule-Augmented Questioning (RAQ) — a domain-specific evaluation framework combining eight deterministic curriculum-alignment rules with a five-dimensional LLM judge — deployed within AfriPed, a CPU-native system generating NERDC- and WAEC-aligned lesson plans, assessments, and curriculum schemes for Nigerian learners. The system runs entirely on consumer CPU hardware (8–15 minutes per session, no cloud dependency). RAQ-validated outputs achieve bloom_accuracy of 0.95 and cultural_name_ratio of 1.00 on 20 golden examples. We argue that domain-specific evaluation frameworks are not optional for African educational AI — they are essential — and release all code and evaluation infrastructure to support this claim.
 
 ---
 
 ## 1. Introduction
 
-The central finding of this paper is methodological: **ROUGE-L is the wrong metric for African educational content quality**, and using it without domain-specific alternatives will systematically mislead both developers and reviewers about whether a system is working.
+The central finding of this paper is methodological: **ROUGE-L is the wrong metric for Nigerian educational content quality**, and using it without domain-specific alternatives will systematically mislead both developers and reviewers about whether a system is working.
 
-This is not a theoretical claim. It is demonstrated empirically. In our ablation study, outputs with *no validation* achieve higher ROUGE-L (0.205) than outputs validated by our full RAQ pipeline (0.120). Yet the no-validation outputs have bloom_accuracy of 0.25 compared to 0.95 for the validated outputs. The metric the NLP community most commonly uses to measure generation quality is, in this domain, inversely related to the thing we actually care about.
+This is not a theoretical claim. It is demonstrated empirically. In our ablation study, outputs with *no validation* achieve higher ROUGE-L (0.149) than outputs validated by our full RAQ pipeline (0.087). Yet the no-validation outputs have bloom_accuracy of 0.25 compared to 0.95 for the validated outputs. The metric the NLP community most commonly uses to measure generation quality is, in this domain, inversely related to the thing we actually care about.
 
-This matters because African educational AI is a growing research area — UNESCO, AfricaNLP, and AIED have all increased attention on the region — but it is largely being evaluated with tools designed for English general-domain text generation. BLEU, ROUGE, and BERTScore measure surface similarity to reference texts. They do not measure whether generated content meets Bloom taxonomy targets, aligns to NERDC structural requirements, or uses culturally appropriate West African examples. These are the failure modes that matter for a Nigerian teacher deciding whether to use AI-generated content in their classroom.
+This matters because African educational AI is a growing research area — UNESCO, AfricaNLP, and AIED have all increased attention on the region — but it is largely being evaluated with tools designed for English general-domain text generation. BLEU, ROUGE, and BERTScore measure surface similarity to reference texts. They do not measure whether generated content meets Bloom taxonomy targets, aligns to NERDC structural requirements, or uses culturally appropriate Nigerian examples. These are the failure modes that matter for a Nigerian teacher deciding whether to use AI-generated content in their classroom.
 
 We make two contributions:
 
-1. **Empirical evidence** that standard NLP metrics negatively correlate with pedagogical quality for Nigerian educational content (ρ = −0.34, N=41).
+1. **Empirical evidence** that standard NLP metrics negatively correlate with pedagogical quality for Nigerian educational content (ρ = −0.45, N=41).
 2. **RAQ (Rule-Augmented Questioning):** a domain-specific evaluation framework with eight deterministic rules and a five-dimensional LLM judge, deployed in a CPU-native educational content generation system.
 
 ---
@@ -42,11 +42,11 @@ This is not a failure of our system. It is a structural property of ROUGE when a
 
 | Condition | bloom_accuracy | cultural_name_ratio | ROUGE-L |
 |---|---|---|---|
-| No validation | 0.25 | 0.50 | **0.205** |
-| Rules only | 1.00 | 1.00 | 0.223 |
-| Full RAQ | **0.95** | **1.00** | 0.120 |
+| No validation | 0.25 | 0.50 | **0.149** |
+| Rules only | 1.00 | 1.00 | 0.145 |
+| Full RAQ | **1.00** | **1.00** | 0.087 |
 
-Pearson ρ (ROUGE-L vs bloom_accuracy, N=41 pooled examples) = **−0.34**
+Pearson ρ (ROUGE-L vs bloom_accuracy, N=41 pooled examples) = **−0.45**
 
 The negative correlation reflects a genuine structural relationship: the more pedagogically grounded the output, the further it diverges from generic reference templates, and the lower ROUGE scores become.
 
@@ -65,7 +65,7 @@ Nigerian curriculum quality has two components ROUGE cannot capture: *structural
 | `length_check` | Content within 25–600% of token budget | Soft |
 | `language_detection` | Language matches request at > 85% confidence | Soft |
 | `bloom_verb_presence` | Bloom action verbs present at target level (A&K 2001) | Soft |
-| `cultural_flag_check` | West African names ≥ 40% of all detected names | Soft |
+| `cultural_flag_check` | Nigerian names ≥ 40% of all detected names | Soft |
 | `format_compliance` | Required structural markers present with synonym expansion | Soft |
 | `no_hallucinated_dates` | No years outside 1800–2030 | Soft |
 | `curriculum_alignment` | Board-specific keywords present (≥ 3) | Soft |
@@ -85,14 +85,14 @@ For benchmark validation only, we additionally run golden set examples through Z
 
 ## 4. System and Infrastructure
 
-EnumVerse AI generates four content types: curriculum schemes, lesson plans, exam questions, and pedagogical insights, via a LangGraph pipeline with pre-warmed models.
+AfriPed generates four content types: curriculum schemes, lesson plans, exam questions, and pedagogical insights, via a LangGraph pipeline with pre-warmed models.
 
 **Hardware:** Intel Core i7, 16GB RAM, CPU-only. Generation: 8–15 min/session.
 **Generator:** Phi-3-mini-4k-instruct (3.8B, bfloat16)
 **Judge:** TinyLlama-1.1B-Chat (hardware-gated, bypassed if RAM insufficient)
 **RAG corpus:** 53,000+ structured curriculum chunks (NERDC, WAEC, NECO, NABTEB, UBEC taxonomy)
 
-The CPU-native design is an ethical choice, not a compromise. West African schools operate without GPU servers or reliable broadband. An 8–15 minute generation time is acceptable for lesson preparation; cloud-dependent systems fail this constraint entirely.
+The CPU-native design is an ethical choice, not a compromise. Nigerian schools operate without GPU servers or reliable broadband. An 8–15 minute generation time is acceptable for lesson preparation; cloud-dependent systems fail this constraint entirely.
 
 ---
 
@@ -113,11 +113,11 @@ The CPU-native design is an ethical choice, not a compromise. West African schoo
 
 | Metric | No Validation | Rules Only | Full RAQ |
 |---|---|---|---|
-| Bloom Accuracy | 0.25 | 1.00 | **0.95** |
+| Bloom Accuracy | 0.25 | 1.00 | **1.00** |
 | Cultural Name Ratio | 0.50 | 1.00 | **1.00** |
 | Format Compliance | 0.375 | 0.875 | **1.00** |
-| Skill Tag Precision | 0.271 | 0.521 | **0.934** |
-| ROUGE-L | 0.205 | 0.223 | 0.120 |
+| Skill Tag Precision | 0.271 | 0.521 | **0.933** |
+| ROUGE-L | 0.149 | 0.145 | 0.087 |
 
 The skill_tag_precision gap (0.521 Rules Only vs. 0.934 Full RAQ) demonstrates that LLM-guided revision adds content depth beyond surface-level rule compliance — Nigerian-specific factual grounding that rule templates alone cannot produce.
 
@@ -134,7 +134,7 @@ The skill_tag_precision gap (0.521 Rules Only vs. 0.934 Full RAQ) demonstrates t
 
 ## 7. Conclusion
 
-ROUGE-L negatively correlates with pedagogical quality for Nigerian educational content (ρ = −0.34). This motivates domain-specific evaluation frameworks for African educational AI. RAQ demonstrates such frameworks are implementable and effective — eight deterministic rules and a five-dimensional LLM judge running without GPU, achieving bloom_accuracy of 0.95 and cultural_name_ratio of 1.00 while revealing the inadequacy of standard metrics.
+ROUGE-L negatively correlates with pedagogical quality for Nigerian educational content (ρ = −0.45). This motivates domain-specific evaluation frameworks for Nigerian — and more broadly African — educational AI. RAQ demonstrates such frameworks are implementable and effective — eight deterministic rules and a five-dimensional LLM judge running without GPU, achieving bloom_accuracy of 0.95 and cultural_name_ratio of 1.00 while revealing the inadequacy of standard metrics.
 
 All code, evaluation infrastructure, and annotation materials are released.
 

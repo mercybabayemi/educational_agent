@@ -25,7 +25,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 OUT_CSV  = PROJECT_ROOT / "data" / "raw" / "curriculum_corpus" / "curriculum_corpus.csv"
 CHROMA_DIR = PROJECT_ROOT / "data" / "vectorstore"
-COLLECTION_NAME = "enumverse_curriculum"
+COLLECTION_NAME = "afriped_curriculum"
 
 CHUNK_SIZE    = 400
 CHUNK_OVERLAP = 80
@@ -390,7 +390,7 @@ def generate_records() -> Iterator[dict]:
                                 "subject": subject,
                                 "topic": topic,
                                 "content_type": tmpl["type"],
-                                "source": "enumverse:synthetic_curriculum_v1",
+                                "source": "afriped:synthetic_curriculum_v1",
                                 "synthetic": True,
                             }
                             global_idx += 1

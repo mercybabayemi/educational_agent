@@ -12,7 +12,7 @@ For related work citations see [`related_work.md`](related_work.md) + [`../refer
 
 We design a multi-stage generation and validation pipeline orchestrated via LangGraph (Haskelberg & Chase, 2024), comprising five functional layers: (1) retrieval, (2) generation, (3) symbolic rule validation, (4) LLM-based judging, and (5) revision. The pipeline is parameterised by curriculum board, education level, Bloom taxonomy target, and output language, enabling content generation across four task types: curriculum planning, content generation, assessment construction, and pedagogical insight analysis.
 
-The system runs entirely on consumer CPU hardware using 4-bit NF4-quantised language models (Dettmers et al., 2023) loaded via HuggingFace Transformers (Wolf et al., 2020). This design choice reflects a core constraint of the target deployment context: West African schools commonly operate without GPU servers or reliable cloud connectivity. Full content generation, including retrieval and validation, completes in 8–15 minutes per session on an Intel Core i7 with 16GB RAM — without cloud dependency.
+The system runs entirely on consumer CPU hardware using 4-bit NF4-quantised language models (Dettmers et al., 2023) loaded via HuggingFace Transformers (Wolf et al., 2020). This design choice reflects a core constraint of the target deployment context: Nigerian schools commonly operate without GPU servers or reliable cloud connectivity. Full content generation, including retrieval and validation, completes in 8–15 minutes per session on an Intel Core i7 with 16GB RAM — without cloud dependency.
 
 ```
 Request
@@ -53,7 +53,15 @@ Response + ValidationReport + SkillTags
 
 We index a corpus of Nigerian educational content into a local ChromaDB vector store using `sentence-transformers/all-MiniLM-L6-v2` embeddings (Reimers & Gurevych, 2019) with 384-dimensional vectors. The current deployment uses all-MiniLM-L6-v2 for its low memory footprint (22MB) and CPU inference speed, ensuring the full system runs within the 16GB RAM constraint. A planned upgrade to `intfloat/multilingual-e5-large` (Wang et al., 2024) will extend cross-lingual retrieval to Hausa, Yoruba, and Igbo content once the multilingual corpus is fully indexed; this upgrade is left as future work.
 
-The corpus comprises seven datasets sourced from HuggingFace (Electric Sheep Africa, 2024; Ben-45, 2024), totalling approximately 21,000 entries spanning vocational education, digital literacy, online examinations, learning materials, teacher training, special needs education, and continuous assessment records. Retrieved chunks are prepended to the generation prompt as curriculum reference context, grounding outputs in local standards rather than relying on the LLM's parametric knowledge of NERDC, WAEC, and NECO requirements.
+**Corpus construction:** The RAG corpus has two layers.
+
+*Layer 1 — Synthetic curriculum corpus (53,171 chunks):* We generate structured educational content from a Nigerian curriculum taxonomy covering five boards (NERDC, WAEC, NECO, NABTEB, UBEC), education levels from Primary 4 through SSS3 and vocational tracks, 19 subjects, and seven content types (lesson notes, topic explanations, exam Q&A, teacher guides, cultural context). This synthetic corpus ensures broad coverage across all curriculum parameters evaluated in our benchmark.
+
+*Layer 2 — Real teacher lesson notes (77 documents):* We obtain 77 authentic weekly lesson notes from a practising ICT teacher at ENGREG HIGH SCHOOL, Pedro Shomolu, Lagos (academic session 2024/2025). These cover Computer Studies and Data Processing across JSS1–3 and SS1–3, and follow the standard Nigerian lesson note format: learning objectives, step-by-step teaching activities, keywords, evaluative questions, assignments, and full lesson content. This is, to our knowledge, the only publicly described corpus of real Nigerian secondary-school teacher-authored lesson notes.
+
+**Corpus audit disclosure:** Seven HuggingFace datasets (Electric Sheep Africa, 2024; Ben-45, 2024) initially identified as Nigerian educational data were found on inspection to contain only administrative records — student ID codes, assessment scores, dates, and state identifiers (e.g., "REC-00312696 2024-08-18 Kwara") — with no educational text content (maximum field length: 43 characters; continuous assessment records all contained the identical string "subject: Mathematics"). We disclose this finding transparently so other researchers can avoid using these sources as educational corpora.
+
+Retrieved chunks are prepended to the generation prompt as curriculum reference context, grounding outputs in local standards rather than relying on the LLM's parametric knowledge of NERDC, WAEC, and NECO requirements.
 
 ### 3.4 Rule-Augmented Questioning (RAQ)
 
@@ -82,7 +90,7 @@ The judge prompt (see `research/prompts/raq_pipeline.py:build_layer4_raq_judge_p
 |---|---|
 | `curriculum_alignment` | Alignment to the specified curriculum board's structural standards |
 | `bloom_depth` | Whether content genuinely requires the target cognitive level (not mere recall) |
-| `cultural_authenticity` | West African names, places, institutions, and currencies used naturally |
+| `cultural_authenticity` | Nigerian names, places, institutions, and currencies used naturally |
 | `language_quality` | Age-appropriate, grammatically correct output in the requested language |
 | `educational_value` | Whether a teacher could use this content as-is, without revision |
 
@@ -144,7 +152,7 @@ We evaluate along eight dimensions. The first five are the core RAQ contribution
 | Metric | Measures | Implementation |
 |---|---|---|
 | `bloom_accuracy` | Bloom verb presence at target level | `tests/eval/metrics.py` |
-| `cultural_name_ratio` | West African / total detected names | `tests/eval/metrics.py` |
+| `cultural_name_ratio` | Nigerian / total detected names | `tests/eval/metrics.py` |
 | `format_compliance` | Structural section presence | `tests/eval/metrics.py` |
 | `skill_tag_precision` | Skill tag prediction vs. expected | `tests/eval/metrics.py` |
 | `readability_ease` | Flesch reading ease | `tests/eval/metrics.py` |

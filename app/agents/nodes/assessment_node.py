@@ -6,7 +6,7 @@ from typing import List, Optional
 
 from loguru import logger
 
-from app.agents.state import EnumVerseState
+from app.agents.state import AfriPedState
 from app.core.llm import generate_text
 from app.core.prompts import build_assessment_prompt
 from app.schemas.assessment import QuestionItem
@@ -92,7 +92,7 @@ def _parse_questions(raw: str, request) -> List[QuestionItem]:
     return questions[:getattr(request, "num_questions", 10)]
 
 
-def assessment_node(state: EnumVerseState) -> EnumVerseState:
+def assessment_node(state: AfriPedState) -> AfriPedState:
     """Generate assessment questions for Pillar 3."""
     request = state.get("request")
     if request is None:

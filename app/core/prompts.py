@@ -1,4 +1,4 @@
-"""All prompt templates for the four EnumVerse pillars."""
+"""All prompt templates for the four AfriPed pillars."""
 from __future__ import annotations
 
 from typing import List, Optional
@@ -50,7 +50,7 @@ Cultural anchors (use where relevant):
 
 # ── Base system prompt ─────────────────────────────────────────────────────────
 
-BASE_SYSTEM = """You are EnumVerse AI, an expert educational content specialist for Nigerian and West African learners.
+BASE_SYSTEM = """You are AfriPed (African Pedagogical Evaluation Framework), an expert educational content specialist for Nigerian and West African learners.
 You generate culturally authentic, curriculum-aligned educational materials across formal schooling, vocational training, community education, life skills, and youth programmes.
 
 Core principles:
@@ -440,7 +440,7 @@ def build_assessment_prompt(
 
 # ── Pillar 4 — Insights prompt ─────────────────────────────────────────────────
 
-INSIGHTS_SYSTEM = """You are EnumVerse AI Diagnostics, an expert at analysing educational content quality.
+INSIGHTS_SYSTEM = """You are AfriPed Diagnostics, an expert at analysing educational content quality.
 Evaluate the provided content across multiple dimensions and return a structured JSON analysis."""
 
 INSIGHTS_HUMAN = """Analyse the following educational content for quality and curriculum alignment:

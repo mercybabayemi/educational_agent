@@ -13,7 +13,7 @@ from loguru import logger
 from app.core.config import settings
 from app.rag.embeddings import get_embeddings
 
-COLLECTION_NAME = "enumverse_curriculum"
+COLLECTION_NAME = "afriped_curriculum"
 
 
 def _get_chroma_client() -> chromadb.PersistentClient:

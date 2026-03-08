@@ -1,4 +1,4 @@
-# EnumVerse AI — API Reference
+# AfriPed — API Reference
 
 **Base URL:** `POST https://<space>/api/v1/`
 **Interactive docs:** `/docs` (Swagger UI) · `/redoc`

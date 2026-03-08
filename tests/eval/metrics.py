@@ -1,4 +1,4 @@
-"""Automated evaluation metrics for EnumVerse AI outputs.
+"""Automated evaluation metrics for AfriPed outputs.
 
 Run:
     python tests/eval/metrics.py --golden-dir tests/eval/golden_set
@@ -190,7 +190,7 @@ def aggregate(results: list[dict]) -> dict:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="EnumVerse evaluation metrics")
+    parser = argparse.ArgumentParser(description="AfriPed evaluation metrics")
     parser.add_argument(
         "--golden-dir",
         type=Path,

@@ -39,7 +39,7 @@
   <!-- ═══ TITLE BAR ═══ -->
   <rect x="0" y="0" width="1200" height="56" fill="url(#headerGrad)" rx="0"/>
   <text x="600" y="21" text-anchor="middle" fill="white" font-size="11" font-weight="400" opacity="0.85">📚 AI-Powered Knowledge &amp; Skills Content for West African Teachers, Trainers &amp; Communities</text>
-  <text x="600" y="42" text-anchor="middle" fill="white" font-size="18" font-weight="700" letter-spacing="1">EnumVerse AI — System Architecture</text>
+  <text x="600" y="42" text-anchor="middle" fill="white" font-size="18" font-weight="700" letter-spacing="1">AfriPed — System Architecture</text>
 
   <!-- ═══ LAYER 1: CLIENT LAYER ═══ -->
   <rect x="20" y="72" width="1160" height="88" fill="#E8F5E9" rx="8" stroke="#A5D6A7" stroke-width="1.5" filter="url(#shadow)"/>
@@ -163,9 +163,9 @@
   <text x="581" y="470" text-anchor="middle" fill="#CE93D8" font-size="9">Guided revision</text>
   <text x="581" y="484" text-anchor="middle" fill="#CE93D8" font-size="9">max 2 retries → rules_node</text>
 
-  <!-- EnumVerseState label -->
+  <!-- AfriPedState label -->
   <rect x="790" y="436" width="370" height="60" fill="#ffffff" rx="6" stroke="#CE93D8" stroke-width="1.2"/>
-  <text x="975" y="452" text-anchor="middle" fill="#6A1B9A" font-size="10" font-weight="700">EnumVerseState (TypedDict)</text>
+  <text x="975" y="452" text-anchor="middle" fill="#6A1B9A" font-size="10" font-weight="700">AfriPedState (TypedDict)</text>
   <text x="800" y="467" fill="#444" font-size="9">pillar · request · rag_context · rag_metadata · generated_content</text>
   <text x="800" y="481" fill="#444" font-size="9">structured_output · skill_tags · validation_report · revision_instruction</text>
   <text x="800" y="495" fill="#444" font-size="9">revision_count (max 2) · final_content · error</text>

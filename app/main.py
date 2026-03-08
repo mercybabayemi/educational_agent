@@ -95,11 +95,11 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="EnumVerse AI",
+    title="AfriPed",
     description=(
-        "AI-powered educational content generation for Nigerian and West African learners. "
-        "Generates curriculum-aligned, culturally authentic content across four pillars: "
-        "Curriculum, Content, Assessment, and Insights."
+        "African Pedagogical Evaluation Framework — AI-powered educational content generation "
+        "for Nigerian and West African learners. Generates curriculum-aligned, culturally authentic "
+        "content across four pillars: Curriculum, Content, Assessment, and Insights."
     ),
     version="1.0.0",
     docs_url="/docs",

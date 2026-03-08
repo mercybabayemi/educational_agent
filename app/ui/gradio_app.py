@@ -1,8 +1,8 @@
 """
 ---
-title: EnumVerse Educational AI
+title: AfriPed Educational AI
 emoji: 📚
-colorFrom: green
+colorFrom: blue
 colorTo: yellow
 sdk: gradio
 sdk_version: 4.43.0
@@ -10,7 +10,7 @@ app_file: app/ui/gradio_app.py
 hardware: t4-medium
 ---
 
-Gradio 5-tab interface for EnumVerse AI on HuggingFace Spaces.
+Gradio 5-tab interface for AfriPed on HuggingFace Spaces.
 """
 from __future__ import annotations
 
@@ -658,7 +658,7 @@ def build_status_tab() -> gr.Tab:
 
 def create_app() -> gr.Blocks:
     with gr.Blocks(
-        title="EnumVerse AI — Knowledge & Skills Content Studio",
+        title="AfriPed — Knowledge & Skills Content Studio",
         theme=gr.themes.Soft(
             primary_hue="green",
             secondary_hue="yellow",
@@ -670,7 +670,7 @@ def create_app() -> gr.Blocks:
     ) as demo:
         gr.Markdown(
             """
-            # 📚 EnumVerse AI — Knowledge & Skills Content Studio
+            # 📚 AfriPed — Knowledge & Skills Content Studio
             **AI-powered content for Nigerian & West African teachers, trainers & communities**
             *Academic · Vocational · Community · Life Skills · Bootcamp · Informal · English · Yoruba · Igbo · Hausa · Pidgin*
             """

@@ -133,7 +133,7 @@ def build_layer1_outline_prompt(
 
 # ── Layer 2 — Content Expansion ────────────────────────────────────────────────
 
-LAYER2_SYSTEM = """You are EnumVerse AI, an expert educational content specialist for
+LAYER2_SYSTEM = """You are AfriPed (African Pedagogical Evaluation Framework), an expert educational content specialist for
 Nigerian and West African learners. Expand the provided curriculum outline into
 complete, teacher-ready {content_type} content. Use culturally appropriate West African
 names, places, and examples. Write in academic but accessible English appropriate

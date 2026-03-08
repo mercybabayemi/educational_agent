@@ -3,12 +3,12 @@ from __future__ import annotations
 
 from loguru import logger
 
-from app.agents.state import EnumVerseState
+from app.agents.state import AfriPedState
 from app.core.llm import generate_text
 from app.core.prompts import build_revision_prompt, BASE_SYSTEM
 
 
-def revise_node(state: EnumVerseState) -> EnumVerseState:
+def revise_node(state: AfriPedState) -> AfriPedState:
     """Rewrite content based on judge's revision instruction."""
     original = state.get("generated_content") or ""
     revision_instruction = state.get("revision_instruction") or "Improve quality and curriculum alignment."

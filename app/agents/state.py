@@ -1,4 +1,4 @@
-"""EnumVerseState — shared TypedDict passed through the LangGraph StateGraph."""
+"""AfriPedState — shared TypedDict passed through the LangGraph StateGraph."""
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Union
@@ -11,7 +11,7 @@ from app.schemas.assessment import AssessmentGenerationRequest
 from app.schemas.insights import InsightsRequest
 
 
-class EnumVerseState(TypedDict, total=False):
+class AfriPedState(TypedDict, total=False):
     # ── Routing ────────────────────────────────────────────────────────────────
     pillar: str                          # "curriculum" | "content" | "assessment" | "insights"
 

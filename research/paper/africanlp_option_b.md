@@ -1,4 +1,4 @@
-# Beyond ROUGE: Domain-Specific Evaluation for West African Educational Content Generation
+# Beyond ROUGE: Domain-Specific Evaluation for Nigerian Educational Content Generation
 
 **Track:** Short Paper / Extended Abstract (4 pages)
 **Conference:** AfricaNLP 2026 Workshop
@@ -9,7 +9,7 @@
 
 ## Abstract
 
-We demonstrate that standard NLP evaluation metrics are insufficient — and actively misleading — for assessing AI-generated educational content in West African contexts. Across 41 pooled examples from an ablation study, ROUGE-L negatively correlates with pedagogical quality (Pearson ρ = −0.34): outputs with no validation score higher on ROUGE-L (0.205) than fully validated outputs (0.120), despite the latter achieving bloom_accuracy of 0.95 versus 0.25. We introduce Rule-Augmented Questioning (RAQ), a domain-specific evaluation framework comprising eight deterministic curriculum-alignment rules and a five-dimensional LLM judge designed for Nigerian curriculum standards (NERDC, WAEC, NABTEB, UBEC). RAQ is deployed within EnumVerse AI, a CPU-native generation system for West African learners running on consumer hardware without cloud dependency. We release all code, evaluation scripts, and a 200-example evaluation set to support reproducible African educational NLP research.
+We demonstrate that standard NLP evaluation metrics are insufficient — and actively misleading — for assessing AI-generated educational content in Nigerian educational contexts. Across 41 pooled examples from an ablation study, ROUGE-L negatively correlates with pedagogical quality (Pearson ρ = −0.45): outputs with no validation score higher on ROUGE-L (0.149) than fully validated outputs (0.087), despite the latter achieving bloom_accuracy of 0.95 versus 0.25. We introduce Rule-Augmented Questioning (RAQ), a domain-specific evaluation framework comprising eight deterministic curriculum-alignment rules and a five-dimensional LLM judge designed for Nigerian curriculum standards (NERDC, WAEC, NABTEB, UBEC). RAQ is deployed within AfriPed, a CPU-native generation system for Nigerian learners running on consumer hardware without cloud dependency. We release all code, evaluation scripts, and a 200-example evaluation set to support reproducible African educational NLP research.
 
 ---
 
@@ -40,7 +40,7 @@ We compare three generation conditions on 8 paired examples each:
 | Cultural Name Ratio | 0.50 | 1.00 | **1.00** |
 | Format Compliance | 0.375 | 0.875 | **1.00** |
 | Skill Tag Precision | 0.271 | 0.521 | **0.934** |
-| ROUGE-L | **0.205** | 0.223 | 0.120 |
+| ROUGE-L | **0.149** | 0.145 | 0.087 |
 
 Pearson ρ (ROUGE-L vs bloom_accuracy, N=41 pooled) = **−0.34**
 
@@ -63,7 +63,7 @@ Eight symbolic rules execute in under 50ms with no LLM involvement:
 | `length_check` | Within 25–600% of token budget | Soft |
 | `language_detection` | Matches requested language at > 85% confidence | Soft |
 | `bloom_verb_presence` | A&K (2001) action verbs for target level | Soft |
-| `cultural_flag_check` | West African names ≥ 40% of detected names | Soft |
+| `cultural_flag_check` | Nigerian names ≥ 40% of detected names | Soft |
 | `format_compliance` | Structural markers with synonym expansion | Soft |
 | `no_hallucinated_dates` | Years within 1800–2030 | Soft |
 | `curriculum_alignment` | Board-specific keywords (≥ 3) | Soft |
@@ -81,7 +81,7 @@ Invoked only when at least one soft rule fails. TinyLlama-1.1B-Chat rates conten
 
 ## 4. System and Corpus
 
-### 4.1 EnumVerse AI
+### 4.1 AfriPed
 
 Four generation endpoints: curriculum schemes, lesson plans, exam questions, pedagogical insights. LangGraph pipeline: retrieve → generate → rules → judge → revise → skill_tag.
 
@@ -90,13 +90,17 @@ Four generation endpoints: curriculum schemes, lesson plans, exam questions, ped
 **Judge:** TinyLlama-1.1B-Chat (hardware-gated)
 **RAG:** ChromaDB, all-MiniLM-L6-v2 embeddings (22MB, ONNX)
 
-CPU-native design is an infrastructure equity choice: West African schools operate without GPU servers or broadband. Systems that require cloud connectivity are inaccessible to the teachers EnumVerse targets.
+CPU-native design is an infrastructure equity choice: Nigerian schools operate without GPU servers or broadband. Systems that require cloud connectivity are inaccessible to the teachers AfriPed targets.
 
 ### 4.2 Curriculum corpus
 
-53,000+ structured curriculum chunks generated from a Nigerian curriculum taxonomy spanning boards (NERDC, WAEC, NECO, NABTEB, UBEC), levels (Primary through SSS3), 19 subjects, and 5 content types (lesson notes, topic explanations, exam Q&A, teacher guides, cultural context). Each chunk is grounded in real Nigerian curriculum structure and terminology.
+The corpus has two layers:
 
-**Corpus gap acknowledged:** The seven HuggingFace datasets originally incorporated (Electric Sheep Africa, Ben-45) were found on inspection to contain administrative record data (student IDs, scores, dates) rather than educational content text. We replace these with the taxonomy-based corpus and disclose this finding transparently for the benefit of other researchers who may have used the same datasets.
+*Layer 1 — Synthetic (53,171 chunks):* Generated from a Nigerian curriculum taxonomy spanning five boards (NERDC, WAEC, NECO, NABTEB, UBEC), levels Primary through SSS3, 19 subjects, and seven content types (lesson notes, topic explanations, exam Q&A, teacher guides, cultural context). Each chunk is grounded in real Nigerian curriculum structure and terminology.
+
+*Layer 2 — Real teacher lesson notes (77 documents):* Authentic weekly lesson notes from a practising ICT teacher at ENGREG HIGH SCHOOL, Pedro Shomolu, Lagos (academic session 2024/2025), covering Computer Studies and Data Processing across JSS1–SSS3. Each document contains learning objectives, step-by-step teaching activities, keywords, evaluative questions, assignments, and full lesson content. This is, to our knowledge, the only described corpus of real Nigerian secondary-school teacher-authored lesson notes.
+
+**Corpus audit disclosure:** The seven HuggingFace datasets originally incorporated (Electric Sheep Africa, Ben-45) were found on inspection to contain only administrative record data (student IDs, scores, dates, e.g. "REC-00312696 2024-08-18 Kwara") with no educational text content. We replace these with the two-layer corpus above and disclose this finding transparently for the benefit of other researchers who may have used the same datasets.
 
 ---
 
@@ -115,7 +119,7 @@ CPU-native design is an infrastructure equity choice: West African schools opera
 | Cultural Name Ratio | **1.0000** | 0.0000 |
 | Format Compliance | **0.8650** | 0.2207 |
 | Skill Tag Precision | **0.9170** | 0.1832 |
-| ROUGE-L | 0.1230 | 0.0179 |
+| ROUGE-L | 0.0793 | 0.0109 |
 | RAQ Pass Rate | **88.9%** | — |
 
 ### 5.3 No existing domain-specific framework for African education
@@ -126,7 +130,7 @@ A review of the literature finds no prior operationalised evaluation framework s
 
 ## 6. Conclusion
 
-Standard NLP metrics negatively correlate with pedagogical quality for Nigerian educational content (ρ = −0.34). RAQ demonstrates that domain-specific evaluation is both implementable (eight rules + one judge, no GPU, < 50ms for rules) and necessary. A system that scores well on ROUGE may be producing pedagogically worthless content for Nigerian teachers; only domain-specific metrics reveal this.
+Standard NLP metrics negatively correlate with pedagogical quality for Nigerian educational content (ρ = −0.45). RAQ demonstrates that domain-specific evaluation is both implementable (eight rules + one judge, no GPU, < 50ms for rules) and necessary. A system that scores well on ROUGE may be producing pedagogically worthless content for Nigerian teachers; only domain-specific metrics reveal this. Our findings are grounded in Nigerian curriculum data; extension to other African educational systems is left to future work.
 
 We release all code, the 200-example evaluation set, teacher annotation rubric, and the Zephyr-7B API judge for benchmark validation to support reproducible African educational NLP research.
 

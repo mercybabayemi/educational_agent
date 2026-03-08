@@ -3,12 +3,12 @@ from __future__ import annotations
 
 from loguru import logger
 
-from app.agents.state import EnumVerseState
+from app.agents.state import AfriPedState
 from app.core.llm import generate_text
 from app.core.prompts import build_curriculum_prompt
 
 
-def curriculum_node(state: EnumVerseState) -> EnumVerseState:
+def curriculum_node(state: AfriPedState) -> AfriPedState:
     """Generate curriculum content (scheme of work / term plan / scope & sequence)."""
     request = state.get("request")
     if request is None:

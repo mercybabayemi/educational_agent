@@ -3,12 +3,12 @@ from __future__ import annotations
 
 from loguru import logger
 
-from app.agents.state import EnumVerseState
+from app.agents.state import AfriPedState
 from app.skills.library import get_skill_library
 from app.schemas.common import SkillTag
 
 
-def skill_tag_node(state: EnumVerseState) -> EnumVerseState:
+def skill_tag_node(state: AfriPedState) -> AfriPedState:
     """Auto-tag generated content with matching skill library entries.
 
     Strategy:

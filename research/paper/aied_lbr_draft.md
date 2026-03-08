@@ -1,4 +1,4 @@
-# Pedagogically-Constrained LLM Generation for West African Classrooms: Early Results from a CPU-Deployed System
+# Pedagogically-Constrained LLM Generation for Nigerian Classrooms: Early Results from a CPU-Deployed System
 
 **Track:** Late Breaking Results
 **Conference:** AIED 2026 — 27th International Conference on Artificial Intelligence in Education
@@ -17,11 +17,11 @@ We present early results from an AI system that generates Bloom-taxonomy-aligned
 
 ## 1. Introduction
 
-Generating high-quality educational content for West African classrooms faces two intersecting challenges. First, the *content challenge*: curriculum frameworks used in Nigeria — the National Educational Research and Development Council (NERDC) scheme of work, the West African Examinations Council (WAEC) examination format, and the National Examinations Council (NECO) standards — are structurally distinct from curricula represented in general-purpose LLM pre-training data. Second, the *infrastructure challenge*: schools in West Africa predominantly operate without GPU servers or reliable broadband connectivity, placing state-of-the-art large language models out of reach for most educators.
+Generating high-quality educational content for Nigerian classrooms faces two intersecting challenges. First, the *content challenge*: curriculum frameworks used in Nigeria — the National Educational Research and Development Council (NERDC) scheme of work, the West African Examinations Council (WAEC) examination format, and the National Examinations Council (NECO) standards — are structurally distinct from curricula represented in general-purpose LLM pre-training data. Second, the *infrastructure challenge*: Nigerian schools predominantly operate without GPU servers or reliable broadband connectivity, placing state-of-the-art large language models out of reach for most educators.
 
-We present EnumVerse AI, a system that addresses both challenges. EnumVerse generates NERDC- and WAEC-aligned lesson plans, assessments, curriculum schemes, and pedagogical insights using 4-bit quantised models on consumer CPU hardware. Critically, we introduce Rule-Augmented Questioning (RAQ), a structured validation layer that automatically checks whether generated content meets Bloom taxonomy targets, uses culturally appropriate West African examples, and conforms to curriculum board structural requirements.
+We present AfriPed, a system that addresses both challenges. AfriPed generates NERDC- and WAEC-aligned lesson plans, assessments, curriculum schemes, and pedagogical insights using 4-bit quantised models on consumer CPU hardware. Critically, we introduce Rule-Augmented Questioning (RAQ), a structured validation layer that automatically checks whether generated content meets Bloom taxonomy targets, uses culturally appropriate Nigerian examples, and conforms to curriculum board structural requirements.
 
-The central finding of this early-results paper is that RAQ-validated generation dramatically outperforms unvalidated prompting on all pedagogical quality dimensions (bloom_accuracy: 0.95 vs. 0.25), while standard NLP metrics such as ROUGE-L *negatively* correlate with these pedagogical gains (ρ = -0.34) — demonstrating that existing automatic evaluation metrics are insufficient for educational content quality assessment.
+The central finding of this early-results paper is that RAQ-validated generation dramatically outperforms unvalidated prompting on all pedagogical quality dimensions (bloom_accuracy: 0.95 vs. 0.25), while standard NLP metrics such as ROUGE-L *negatively* correlate with these pedagogical gains (ρ = −0.45, N=41) — demonstrating that existing automatic evaluation metrics are insufficient for educational content quality assessment.
 
 ---
 
@@ -29,9 +29,9 @@ The central finding of this early-results paper is that RAQ-validated generation
 
 ### 2.1 Pipeline
 
-The EnumVerse pipeline is orchestrated via LangGraph and comprises five stages:
+The AfriPed pipeline is orchestrated via LangGraph and comprises five stages:
 
-1. **RAG Retrieval:** Retrieve top-k passages from a ChromaDB vector store indexed on 21,000 Nigerian educational entries spanning seven domains (vocational, digital learning, online exams, learning materials, teacher training, special needs, continuous assessment).
+1. **RAG Retrieval:** Retrieve top-k passages from a ChromaDB vector store indexed on two corpus layers: (a) 53,171 synthetic curriculum chunks spanning five Nigerian boards, 19 subjects, and seven content types; and (b) 77 authentic weekly lesson notes from a practising ICT teacher at ENGREG HIGH SCHOOL, Lagos (2024/2025 session), covering Computer Studies and Data Processing across JSS1–SSS3. Note: seven HuggingFace datasets initially identified as Nigerian educational data were found on audit to contain only administrative records (student IDs, scores) with no educational text, and were replaced by this two-layer corpus.
 2. **Generation:** Phi-3-mini-4k-instruct (3.8B, 4-bit NF4 quantisation) generates structured content in a two-pass process: outline → expanded output.
 3. **Symbolic Rule Validation:** Eight deterministic rules execute in under 50ms, checking length, language, Bloom verb presence, cultural name ratio, format compliance, hallucinated dates, curriculum alignment, and explicit content.
 4. **LLM Judge:** TinyLlama-1.1B-Chat rates content on five pedagogical dimensions (curriculum alignment, Bloom depth, cultural authenticity, language quality, educational value) using a 1–5 integer scale per dimension.
@@ -78,7 +78,7 @@ We evaluate on eight dimensions; the first five capture pedagogical quality beyo
 | Metric | Description |
 |---|---|
 | `bloom_accuracy` | Presence of Bloom action verbs at target cognitive level (0–1) |
-| `cultural_name_ratio` | West African names as fraction of all detected names (0–1; higher = better) |
+| `cultural_name_ratio` | Nigerian names as fraction of all detected names (0–1; higher = better) |
 | `format_compliance` | Structural section presence score for content type (0–1) |
 | `skill_tag_precision` | Predicted skill tags vs. expected (0–1) |
 | `rouge_l` | Standard lexical overlap metric (included as baseline comparison) |
@@ -93,7 +93,7 @@ We evaluate on eight dimensions; the first five capture pedagogical quality beyo
 | Cultural Name Ratio | **1.0000** | 0.0000 |
 | Format Compliance | **0.8650** | 0.2207 |
 | Skill Tag Precision | **0.9170** | 0.1832 |
-| ROUGE-L | 0.1230 | 0.0179 |
+| ROUGE-L | 0.0793 | 0.0109 |
 | RAQ Pass Rate | **88.9%** | — |
 
 **Table 2: Ablation Study (N=8 paired examples per condition)**
@@ -104,9 +104,9 @@ We evaluate on eight dimensions; the first five capture pedagogical quality beyo
 | Cultural Name Ratio | 0.50 | **1.00** | **1.00** |
 | Format Compliance | 0.375 | 0.875 | **1.00** |
 | Skill Tag Precision | 0.271 | 0.521 | **0.934** |
-| ROUGE-L | 0.205 | 0.223 | 0.120 |
+| ROUGE-L | 0.149 | 0.145 | 0.087 |
 
-**Key finding:** ROUGE-L is *inversely* related to pedagogical quality across conditions (Pearson ρ = -0.34 across N=41 examples). No-validation outputs achieve higher ROUGE-L (0.205) than Full RAQ outputs (0.120), despite being dramatically worse on all pedagogical dimensions. This demonstrates that existing automatic evaluation metrics are insufficient for educational content quality assessment — the core motivation for RAQ.
+**Key finding:** ROUGE-L is *inversely* related to pedagogical quality across conditions (Pearson ρ = −0.45 across N=41 pooled examples). No-validation outputs achieve higher ROUGE-L (0.149) than Full RAQ outputs (0.087), despite being dramatically worse on all pedagogical dimensions. This demonstrates that existing automatic evaluation metrics are insufficient for educational content quality assessment — the core motivation for RAQ.
 
 ### 3.4 Qualitative Observations
 
@@ -122,7 +122,7 @@ RAQ embeds curriculum standards as structural generation constraints, not post-h
 
 ### 4.2 Infrastructure Equity
 
-A core argument of this paper is that CPU efficiency is not a technical compromise but an ethical design choice. The 8–15 minute generation time on a 16GB RAM consumer laptop is acceptable for a teacher preparing content the evening before a lesson — a common use case in Nigerian schools where lesson preparation happens at home without school infrastructure access. Cloud-dependent systems would require internet connectivity that is frequently unavailable or unaffordable in rural West African school contexts.
+A core argument of this paper is that CPU efficiency is not a technical compromise but an ethical design choice. The 8–15 minute generation time on a 16GB RAM consumer laptop is acceptable for a teacher preparing content the evening before a lesson — a common use case in Nigerian schools where lesson preparation happens at home without school infrastructure access. Cloud-dependent systems would require internet connectivity that is frequently unavailable or unaffordable in rural Nigerian school contexts.
 
 ### 4.3 Limitations and Future Work
 
@@ -137,7 +137,7 @@ Several limitations constrain our current findings:
 
 ## 5. Conclusion
 
-We presented early results from EnumVerse AI, a CPU-deployed educational content generation system for West African learners. Our Rule-Augmented Questioning (RAQ) framework achieves bloom_accuracy of 0.95 and cultural_name_ratio of 1.00 on a 20-example golden set, with an 88.9% RAQ pass rate. Ablation study results confirm that both deterministic rules and LLM-guided revision contribute to quality improvement, with the LLM judge enabling richer content depth (skill_tag_precision 0.934 vs. 0.521 for rules-only). Crucially, ROUGE-L negatively correlates with pedagogical quality (ρ = -0.34), motivating domain-specific evaluation frameworks for educational AI systems.
+We presented early results from AfriPed, a CPU-deployed educational content generation system for Nigerian learners. Our Rule-Augmented Questioning (RAQ) framework achieves bloom_accuracy of 0.95 and cultural_name_ratio of 1.00 on a 20-example golden set, with an 88.9% RAQ pass rate. Ablation study results confirm that both deterministic rules and LLM-guided revision contribute to quality improvement, with the LLM judge enabling richer content depth (skill_tag_precision 0.934 vs. 0.521 for rules-only). Crucially, ROUGE-L negatively correlates with pedagogical quality (ρ = −0.45, N=41), motivating domain-specific evaluation frameworks for educational AI systems.
 
 Future work includes teacher-facing user studies, expansion of the golden set, multilingual evaluation (Hausa, Yoruba, Igbo), and integration of multilingual embeddings for cross-lingual RAG retrieval.
 
