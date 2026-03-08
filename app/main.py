@@ -29,12 +29,12 @@ def _real_files_exist() -> bool:
 
 
 async def _bootstrap_rag() -> None:
-    """Populate vectorstore before the app starts accepting requests.
+    """Ingest real curriculum files from data/raw/ if vectorstore is empty.
 
-    Priority:
-    1. Real curriculum files in data/raw/ → ingest_files()
-    2. No real files → ingest_synthetic() as fallback
-    Errors are caught so a failed bootstrap never prevents the app from starting.
+    Runs as a background task after the server is already healthy.
+    Does NOT generate synthetic content — that blocks startup for 10+ min on CPU.
+    If no real files exist and vectorstore is empty, app starts without RAG context
+    (generation still works, just without curriculum retrieval).
     """
     from app.rag.vectorstore import get_document_count
 
@@ -48,24 +48,20 @@ async def _bootstrap_rag() -> None:
         logger.info(f"Vectorstore ready — {count} chunks already loaded. Skipping bootstrap.")
         return
 
-    logger.info("Vectorstore is empty — running startup RAG bootstrap (app will accept requests after this).")
-
-    try:
-        if _real_files_exist():
-            logger.info(f"Found curriculum files in {RAW_DATA_DIR} — ingesting real documents.")
+    if _real_files_exist():
+        logger.info(f"Found curriculum files in {RAW_DATA_DIR} — ingesting in background.")
+        try:
             from app.rag.ingestion.ingest import ingest_files
             await asyncio.to_thread(ingest_files, RAW_DATA_DIR)
-        else:
-            logger.info("No curriculum files found — generating synthetic bootstrap content.")
-            from app.rag.ingestion.ingest import ingest_synthetic
-            await asyncio.to_thread(ingest_synthetic)
-
-        final_count = get_document_count()
-        logger.info(f"Startup bootstrap complete — {final_count} chunks in vectorstore. Ready.")
-    except Exception as exc:
-        logger.error(
-            f"Startup RAG bootstrap failed: {exc}. "
-            "App will start but RAG context will be empty. Re-trigger via Gradio UI."
+            final_count = get_document_count()
+            logger.info(f"Background ingest complete — {final_count} chunks in vectorstore.")
+        except Exception as exc:
+            logger.error(f"Background RAG ingest failed: {exc}")
+    else:
+        logger.info(
+            "Vectorstore is empty and no files found in data/raw/. "
+            "App is ready — ingest corpus via POST /api/v1/ingest or run "
+            "research/datasets/ingest_teacher_content.py to populate RAG."
         )
 
 
@@ -88,9 +84,15 @@ async def _warmup_models() -> None:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Bootstrap RAG then pre-load both LLM pipelines before accepting requests."""
-    await _bootstrap_rag()
+    """Pre-load LLM pipelines, then start server. Bootstrap RAG in background.
+
+    Startup order:
+    1. Warmup models (Phi-3 + TinyLlama) — blocks until loaded, ~30s on warm cache
+    2. yield — server becomes healthy and starts accepting requests
+    3. Bootstrap RAG runs as background task (non-blocking)
+    """
     await _warmup_models()
+    asyncio.create_task(_bootstrap_rag())
     yield
 
 
