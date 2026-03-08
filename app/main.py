@@ -53,16 +53,22 @@ async def _bootstrap_rag() -> None:
         try:
             from app.rag.ingestion.ingest import ingest_files
             await asyncio.to_thread(ingest_files, RAW_DATA_DIR)
-            final_count = get_document_count()
-            logger.info(f"Background ingest complete — {final_count} chunks in vectorstore.")
+            logger.info(f"Background ingest complete — {get_document_count()} chunks in vectorstore.")
         except Exception as exc:
-            logger.error(f"Background RAG ingest failed: {exc}")
+            logger.error(f"Background ingest failed: {exc}")
     else:
-        logger.info(
-            "Vectorstore is empty and no files found in data/raw/. "
-            "App is ready — ingest corpus via POST /api/v1/ingest or run "
-            "research/datasets/ingest_teacher_content.py to populate RAG."
-        )
+        # Try the committed teacher corpus (works on Spaces and any clone)
+        corpus_dir = Path("corpus/teacher_content")
+        if corpus_dir.exists() and any(corpus_dir.glob("*.docx")):
+            logger.info(f"Found teacher corpus at {corpus_dir} — ingesting {sum(1 for _ in corpus_dir.glob('*.docx'))} files in background.")
+            try:
+                from research.datasets.ingest_teacher_content import ingest_teacher_content
+                await asyncio.to_thread(ingest_teacher_content)
+                logger.info(f"Teacher corpus ingest complete — {get_document_count()} chunks in vectorstore.")
+            except Exception as exc:
+                logger.error(f"Teacher corpus ingest failed: {exc}")
+        else:
+            logger.info("Vectorstore empty — no corpus files found. App ready; generation works without RAG.")
 
 
 async def _warmup_models() -> None:

@@ -29,7 +29,12 @@ from loguru import logger
 from app.rag.ingestion.chunker import chunk_documents
 from app.rag.vectorstore import add_documents
 
-TEACHER_CONTENT_DIR = Path.home() / "Downloads" / "Teachers Content"
+# Repo-committed corpus (works on HuggingFace Spaces and any clone)
+_REPO_CORPUS = ROOT / "corpus" / "teacher_content"
+# Local dev fallback
+_LOCAL_DOWNLOADS = Path.home() / "Downloads" / "Teachers Content"
+
+TEACHER_CONTENT_DIR = _REPO_CORPUS if _REPO_CORPUS.exists() else _LOCAL_DOWNLOADS
 
 # ── filename → metadata mapping ────────────────────────────────────────────────
 # Filenames follow the pattern:  <LEVEL> WEEK <N> <SUBJECT>.docx
