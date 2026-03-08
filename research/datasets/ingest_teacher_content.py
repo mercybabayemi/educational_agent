@@ -56,7 +56,7 @@ SUBJECT_MAP = {
 }
 
 FILENAME_RE = re.compile(
-    r"^(JSS\d|SSS?\d)\s+WEEK\s+(\d+)\s+(ICT|DATA PROCESSING)\.docx$",
+    r"^(JSS\d|SSS?\d)\s+WEEK\s+(\d+)\s+(ICT|DATA PROCESSING)\.(docx|txt)$",
     re.IGNORECASE,
 )
 
@@ -110,20 +110,27 @@ def ingest_teacher_content(dry_run: bool = False) -> int:
         logger.error(f"Directory not found: {TEACHER_CONTENT_DIR}")
         return 0
 
+    # Prefer pre-extracted .txt files (no binary — works on HF Spaces);
+    # fall back to .docx if only those are present (local dev with originals).
+    txt_files  = sorted(TEACHER_CONTENT_DIR.glob("*.txt"))
     docx_files = sorted(TEACHER_CONTENT_DIR.glob("*.docx"))
-    logger.info(f"Found {len(docx_files)} DOCX files in {TEACHER_CONTENT_DIR}")
+    files = txt_files if txt_files else docx_files
+    logger.info(f"Found {len(files)} {'TXT' if txt_files else 'DOCX'} files in {TEACHER_CONTENT_DIR}")
 
     total_chunks = 0
     skipped = []
 
-    for path in docx_files:
+    for path in files:
         meta_from_name = parse_filename(path.name)
         if not meta_from_name:
             logger.warning(f"Could not parse filename: {path.name} — skipping")
             skipped.append(path.name)
             continue
 
-        text = read_docx_text(path)
+        if path.suffix.lower() == ".txt":
+            text = path.read_text(encoding="utf-8", errors="ignore")
+        else:
+            text = read_docx_text(path)
         if not text.strip():
             logger.warning(f"Empty content: {path.name} — skipping")
             skipped.append(path.name)

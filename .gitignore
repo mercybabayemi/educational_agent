@@ -41,3 +41,4 @@ logs/
 # OS
 .DS_Store
 Thumbs.db
+corpus/teacher_content/*.docx
